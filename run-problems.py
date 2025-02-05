@@ -149,6 +149,16 @@ class Wildstyle(System):
     gpu_per_job = 1
     cpu_per_job = 32
 
+class Bede(System):
+     build_dirs = {
+         'orange': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug-novg"),
+        'vecgeom': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug"),
+     }
+     name = "bede"
+     num_jobs = 1
+     gpu_per_job = 1
+     cpu_per_job = 4
+
 
 class Local(System):
     build_dirs = {
@@ -433,28 +443,9 @@ use_vecgeom = {"_geometry": "vecgeom"}
 
 # List of list of setting dictionaries
 problems = [
-    [testem15, no_msc],
-    [testem15, no_msc, use_field],
-    [testem15, use_field],
-    [testem15, use_field, use_vecgeom],
-    [testem3, no_msc],
-    [testem3, no_msc, use_vecgeom],
-    [testem3, no_msc, use_field],
-    [testem3],
-    [testem3, use_field],
-    [testem3, use_field, use_vecgeom],
-    [testem3_composite],
-    [testem3_composite, use_vecgeom],
-    [testem3_composite, use_field],
-    [testem3_composite, use_field, use_vecgeom],
     [testem3_expanded, use_field],
     [testem3_expanded, use_field, use_vecgeom],
     [tilecal, no_msc],
-    [tilecal, no_msc, use_vecgeom],
-    [hgcal, no_msc],
-    [hgcal, no_msc, use_vecgeom],
-    [full_cms, no_msc],
-    [full_cms, use_field],
 ]
 
 # Run again with sync on for detailed GPU timing
@@ -649,7 +640,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede]}
         Sys = _systems[sysname]
 
     system = Sys()
