@@ -150,14 +150,15 @@ class Wildstyle(System):
     cpu_per_job = 32
 
 class Bede(System):
-     build_dirs = {
-         'orange': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug-novg"),
-        'vecgeom': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug"),
-     }
-     name = "bede"
-     num_jobs = 1
-     gpu_per_job = 1
-     cpu_per_job = 4
+    #  User must be a member of the bdshe19 project on N8CIR Bede & have activated the spack env
+    build_dirs = {
+        'orange': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-reldeb-novg"),
+        'vecgeom': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-reldeb"),
+    }
+    name = "bede"
+    num_jobs = 1 # 1 GH200 480GB per gh partition node
+    gpu_per_job = 1
+    cpu_per_job = 72 # 72 CPU cores per GH200
 
 
 class Local(System):
