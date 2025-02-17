@@ -1,6 +1,7 @@
 #!/bin/bash -e
 #SBATCH -A bdshe19
 #SBATCH -t 03:59:59
+#SBATCH -p gh
 #SBATCH -N 1
 #SBATCH --gres=gpu:1
 #SBATCH -J celer-regression
