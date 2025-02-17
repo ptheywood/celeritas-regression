@@ -160,7 +160,6 @@ class Bede(System):
     gpu_per_job = 1
     cpu_per_job = 72 # 72 CPU cores per GH200
 
-
 class Local(System):
     build_dirs = {
         "orange": Path("/Users/seth/Code/celeritas/build-reldeb"),
