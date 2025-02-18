@@ -322,12 +322,9 @@ class Bede(System):
 
         # celer-g4 encounters cuda out of mem errors on GH200 with 72 CPU threads but a single 96GiB GPU.
         # use a different cpu count in this case.
-        if inp['_exe'] == "celer-g4":
-            env['OMP_NUM_THREADS'] = str(1)
-            env['G4FORCE_RUN_MANAGER_TYPE'] = "MT"
+        if inp['_exe'] == "celer-g4" and inp['use_device']:
             env['G4FORCENUMBEROFTHREADS'] = str(self.cpu_per_job_g4)
-        else:
-            assert inp['_exe'] == "celer-sim"
+
         # return the updated environment
         return env
 
