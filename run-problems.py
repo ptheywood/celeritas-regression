@@ -345,59 +345,59 @@ class JadeARC(System):
         # env["HSA_OVERRIDE_CPU_AFFINITY_DEBUG"] = "0"
         return env
     
-    def create_gpu_power_monitor_subprocess(self, inp):
-        """
-        Create a subprocess that monitors GPU power usage using amd-smi
+    # def create_gpu_power_monitor_subprocess(self, inp):
+    #     """
+    #     Create a subprocess that monitors GPU power usage using amd-smi
 
-        @todo - unclear if this is instantaneous or time-sampled power consumption from the very sparse amd docs
+    #     @todo - unclear if this is instantaneous or time-sampled power consumption from the very sparse amd docs
 
-        Returns:
-            subprocess: the power monitor subprocess
-        """
-        cmd = "amd-smi"
-        args = ['monitor', '-g', str(inp['_instance']), '-ptum', '-w', str(self.power_sample_interval), "--csv"]
-        return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
+    #     Returns:
+    #         subprocess: the power monitor subprocess
+    #     """
+    #     cmd = "amd-smi"
+    #     args = ['monitor', '-g', str(inp['_instance']), '-ptum', '-w', str(self.power_sample_interval), "--csv"]
+    #     return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
 
-    async def compute_gpu_energy(self, power_monitor_subprocess: asyncio.subprocess.Process):
-        """
-        Terminate the power monitor subprocess and compute the total energy consumed
+    # async def compute_gpu_energy(self, power_monitor_subprocess: asyncio.subprocess.Process):
+    #     """
+    #     Terminate the power monitor subprocess and compute the total energy consumed
 
-        Returns:
-            energy_wh: total energy consumed in watt-hours
-            gpu_power: array of GPU power samples in watts (average power draw over 1s)
-        """
-        if power_monitor_subprocess is None:
-            return 0, np.array([])
+    #     Returns:
+    #         energy_wh: total energy consumed in watt-hours
+    #         gpu_power: array of GPU power samples in watts (average power draw over 1s)
+    #     """
+    #     if power_monitor_subprocess is None:
+    #         return 0, np.array([])
 
-        power_monitor_subprocess.terminate()
-        out, _ = await communicate_with_timeout(power_monitor_subprocess, 5)
+    #     power_monitor_subprocess.terminate()
+    #     out, _ = await communicate_with_timeout(power_monitor_subprocess, 5)
 
-        if power_monitor_subprocess.returncode:
-            print(f"Power monitor exited with code {power_monitor_subprocess.returncode}")
-            return 0, np.array([])
+    #     if power_monitor_subprocess.returncode:
+    #         print(f"Power monitor exited with code {power_monitor_subprocess.returncode}")
+    #         return 0, np.array([])
 
-        lines = out.decode().splitlines()
-        gpu_power = []
-        for line in lines:
-            if re.match('^[0-9]+', line):
-                line_cols = line.split(",")
-                try:
-                    power = float(line_cols[2])
-                    gfx_use = int(line_cols[5])
-                except (IndexError, ValueError):
-                    print(f"Failed to parse power sample: {line}")
-                    continue
-                else:
-                    if gfx_use > 0: # sometimes this seems to be stuck at 100 when gpu is not being used and idles at 200W...
-                        gpu_power.append(power)
-        gpu_power = np.array(gpu_power, dtype=np.float32)
-        if gpu_power.size == 0:
-            print("No GPU power samples found")
-            return 0, np.array([])
-        energy_ws = np.sum(np.multiply(gpu_power, self.power_sample_interval))
-        print(f"{energy_ws} watts-secs {simpson(gpu_power)}")
-        energy_wh = energy_ws / 3600
-        return energy_wh, gpu_power
+    #     lines = out.decode().splitlines()
+    #     gpu_power = []
+    #     for line in lines:
+    #         if re.match('^[0-9]+', line):
+    #             line_cols = line.split(",")
+    #             try:
+    #                 power = float(line_cols[2])
+    #                 gfx_use = int(line_cols[5])
+    #             except (IndexError, ValueError):
+    #                 print(f"Failed to parse power sample: {line}")
+    #                 continue
+    #             else:
+    #                 if gfx_use > 0: # sometimes this seems to be stuck at 100 when gpu is not being used and idles at 200W...
+    #                     gpu_power.append(power)
+    #     gpu_power = np.array(gpu_power, dtype=np.float32)
+    #     if gpu_power.size == 0:
+    #         print("No GPU power samples found")
+    #         return 0, np.array([])
+    #     energy_ws = np.sum(np.multiply(gpu_power, self.power_sample_interval))
+    #     print(f"{energy_ws} watts-secs {simpson(gpu_power)}")
+    #     energy_wh = energy_ws / 3600
+    #     return energy_wh, gpu_power
 
     def create_celer_subprocess(self, inp):
         cmd = "srun"
