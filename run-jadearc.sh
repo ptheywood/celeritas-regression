@@ -7,7 +7,7 @@
 #SBATCH -J celer-regression
 #SBATCH -o jade-arc-%J.out
 #SBATCH -e jade-arc-%J.err
-#SBATCH -q medium
+#SBATCH -p medium
 
 if [ -z "$SLURM_JOB_ID" ]; then
   set -x
