@@ -330,20 +330,19 @@ class Bede(System):
 
 
 class JadeARC(System):
-    raise Exception("@todo")
-    _CELER_ROOT = Path(environ['HOME']) / 'Code' / 'celeritas-frontier'
+    _CELER_ROOT = Path(environ['HOME']) / 'celeritas-project' / 'celeritas'
     build_dirs = {
         "orange": _CELER_ROOT / 'build-ndebug'
     }
-    name = "JADE@ARC"
-    num_jobs = 8 # 8 MI300X per node
+    name = "jade"
+    num_jobs = 1 # 8 MI300X per node
     gpu_per_job = 1
-    cpu_per_job = 16 # 2x 64 CPU per node
+    cpu_per_job = 16 # 128 core per node
     power_sample_interval = 1.0  # seconds
 
     def get_runtime_environ(self, inp):
         env = super().get_runtime_environ(inp)
-        env["HSA_OVERRIDE_CPU_AFFINITY_DEBUG"] = "0"
+        # env["HSA_OVERRIDE_CPU_AFFINITY_DEBUG"] = "0"
         return env
     
     def create_gpu_power_monitor_subprocess(self, inp):
@@ -351,7 +350,6 @@ class JadeARC(System):
         Create a subprocess that monitors GPU power usage using amd-smi
 
         @todo - unclear if this is instantaneous or time-sampled power consumption from the very sparse amd docs
-        @todo - amd-smi GFX_UTIL always reports 100%? baseline ~200W at idle...
 
         Returns:
             subprocess: the power monitor subprocess
@@ -378,21 +376,19 @@ class JadeARC(System):
             print(f"Power monitor exited with code {power_monitor_subprocess.returncode}")
             return 0, np.array([])
 
-    raise Exception("@todo")
-
         lines = out.decode().splitlines()
         gpu_power = []
         for line in lines:
-            if re.match('^ [0-9]+', line):
-                line_cols = line.split()
+            if re.match('^[0-9]+', line):
+                line_cols = line.split(",")
                 try:
-                    power = float(line_cols[3])
-                    sm_use = int(line_cols[6])
+                    power = float(line_cols[2])
+                    gfx_use = int(line_cols[5])
                 except (IndexError, ValueError):
                     print(f"Failed to parse power sample: {line}")
                     continue
                 else:
-                    if sm_use > 80:
+                    if gfx_use > 0: # sometimes this seems to be stuck at 100 when gpu is not being used and idles at 200W...
                         gpu_power.append(power)
         gpu_power = np.array(gpu_power, dtype=np.float32)
         if gpu_power.size == 0:
