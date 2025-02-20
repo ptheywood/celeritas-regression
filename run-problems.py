@@ -424,7 +424,6 @@ class JadeARC(System):
             raise FileNotFoundError(exe)
         args.extend([str(exe), "-"])
 
-        print(cmd, args)
         return asyncio.create_subprocess_exec(
             cmd, *args,
             stdin=asyncio.subprocess.PIPE,
@@ -578,39 +577,39 @@ use_vecgeom = {"_geometry": "vecgeom"}
 
 # List of list of setting dictionaries
 problems = [
-    # [testem15, no_msc],
-    # [testem15, no_msc, use_field],
-    # [testem15, use_field],
-    # [testem15, use_field, use_vecgeom],
+    [testem15, no_msc],
+    [testem15, no_msc, use_field],
+    [testem15, use_field],
+    [testem15, use_field, use_vecgeom],
     [testem3, no_msc],
-    # [testem3, no_msc, use_vecgeom],
-    # [testem3, no_msc, use_field],
-    # [testem3],
-    # [testem3, use_field],
-    # [testem3, use_field, use_vecgeom],
-    # [testem3_composite],
-    # [testem3_composite, use_vecgeom],
-    # [testem3_composite, use_field],
-    # [testem3_composite, use_field, use_vecgeom],
-    # [testem3_expanded, use_field],
-    # [testem3_expanded, use_field, use_vecgeom],
-    # [tilecal, no_msc],
-    # [tilecal, no_msc, use_vecgeom],
-    # [hgcal, no_msc],
-    # [hgcal, no_msc, use_vecgeom],
-    # [full_cms, no_msc],
-    # [full_cms, use_field],
+    [testem3, no_msc, use_vecgeom],
+    [testem3, no_msc, use_field],
+    [testem3],
+    [testem3, use_field],
+    [testem3, use_field, use_vecgeom],
+    [testem3_composite],
+    [testem3_composite, use_vecgeom],
+    [testem3_composite, use_field],
+    [testem3_composite, use_field, use_vecgeom],
+    [testem3_expanded, use_field],
+    [testem3_expanded, use_field, use_vecgeom],
+    [tilecal, no_msc],
+    [tilecal, no_msc, use_vecgeom],
+    [hgcal, no_msc],
+    [hgcal, no_msc, use_vecgeom],
+    [full_cms, no_msc],
+    [full_cms, use_field],
 ]
 
 # Run again with sync on for detailed GPU timing
 sync_problems = [
-    # [testem15, no_msc, use_field],
-    # [testem15, no_msc, use_field, use_vecgeom],
+    [testem15, no_msc, use_field],
+    [testem15, no_msc, use_field, use_vecgeom],
     [testem3, use_field],
-    # [testem3, use_field, use_vecgeom],
-    # [testem3_composite, use_field],
-    # [testem3_composite, use_field, use_vecgeom],
-    # [full_cms, use_field],
+    [testem3, use_field, use_vecgeom],
+    [testem3_composite, use_field],
+    [testem3_composite, use_field, use_vecgeom],
+    [full_cms, use_field],
 ]
 
 def recurse_updated(d, other):

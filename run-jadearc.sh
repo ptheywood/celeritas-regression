@@ -3,7 +3,6 @@
 #SBATCH -t 3:59:59
 #SBATCH -N 1
 #SBATCH --cpus-per-gpu=16
-#SBATCH --mem-per-gpu=128G
 #SBATCH --gres=gpu:1
 #SBATCH -J celer-regression
 #SBATCH -o jade-arc-%J.out
