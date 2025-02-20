@@ -328,6 +328,117 @@ class Bede(System):
         # return the updated environment
         return env
 
+
+class JadeARC(System):
+    raise Exception("@todo")
+    _CELER_ROOT = Path(environ['HOME']) / 'Code' / 'celeritas-frontier'
+    build_dirs = {
+        "orange": _CELER_ROOT / 'build-ndebug'
+    }
+    name = "JADE@ARC"
+    num_jobs = 8 # 8 MI300X per node
+    gpu_per_job = 1
+    cpu_per_job = 16 # 2x 64 CPU per node
+    power_sample_interval = 1.0  # seconds
+
+    def get_runtime_environ(self, inp):
+        env = super().get_runtime_environ(inp)
+        env["HSA_OVERRIDE_CPU_AFFINITY_DEBUG"] = "0"
+        return env
+    
+    def create_gpu_power_monitor_subprocess(self, inp):
+        """
+        Create a subprocess that monitors GPU power usage using amd-smi
+
+        @todo - unclear if this is instantaneous or time-sampled power consumption from the very sparse amd docs
+        @todo - amd-smi GFX_UTIL always reports 100%? baseline ~200W at idle...
+
+        Returns:
+            subprocess: the power monitor subprocess
+        """
+        cmd = "amd-smi"
+        args = ['monitor', '-g', str(inp['_instance']), '-ptum', '-w', str(self.power_sample_interval), "--csv"]
+        return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
+
+    async def compute_gpu_energy(self, power_monitor_subprocess: asyncio.subprocess.Process):
+        """
+        Terminate the power monitor subprocess and compute the total energy consumed
+
+        Returns:
+            energy_wh: total energy consumed in watt-hours
+            gpu_power: array of GPU power samples in watts (average power draw over 1s)
+        """
+        if power_monitor_subprocess is None:
+            return 0, np.array([])
+
+        power_monitor_subprocess.terminate()
+        out, _ = await communicate_with_timeout(power_monitor_subprocess, 5)
+
+        if power_monitor_subprocess.returncode:
+            print(f"Power monitor exited with code {power_monitor_subprocess.returncode}")
+            return 0, np.array([])
+
+    raise Exception("@todo")
+
+        lines = out.decode().splitlines()
+        gpu_power = []
+        for line in lines:
+            if re.match('^ [0-9]+', line):
+                line_cols = line.split()
+                try:
+                    power = float(line_cols[3])
+                    sm_use = int(line_cols[6])
+                except (IndexError, ValueError):
+                    print(f"Failed to parse power sample: {line}")
+                    continue
+                else:
+                    if sm_use > 80:
+                        gpu_power.append(power)
+        gpu_power = np.array(gpu_power, dtype=np.float32)
+        if gpu_power.size == 0:
+            print("No GPU power samples found")
+            return 0, np.array([])
+        energy_ws = np.sum(np.multiply(gpu_power, self.power_sample_interval))
+        print(f"{energy_ws} watts-secs {simpson(gpu_power)}")
+        energy_wh = energy_ws / 3600
+        return energy_wh, gpu_power
+
+    def create_celer_subprocess(self, inp):
+        cmd = "srun"
+
+        env = dict(environ)
+        env.update(self.get_runtime_environ(inp))
+
+        args = [
+            f"--cpus-per-task={self.cpu_per_job}",
+        ]
+        if inp['use_device']:
+            args.append("--gpus-per-task=1")
+            args.append("--gpu-bind=verbose,closest")
+        else:
+            args.append("--gpus=0")
+
+        try:
+            build = self.build_dirs[inp["_geometry"]]
+        except KeyError:
+            raise RuntimeError("Geometry type unavailable")
+
+        exe = build / "bin" / inp['_exe']
+        if not exe.exists():
+            raise FileNotFoundError(exe)
+        args.extend([str(exe), "-"])
+
+        return asyncio.create_subprocess_exec(
+            cmd, *args,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            env=env,
+        )
+
+    def filter_problems(self, inputs):
+        return [i for i in inputs if i['_geometry'] != "vecgeom"]
+
 regression_dir = Path(__file__).parent
 input_dir = regression_dir / "input"
 
@@ -688,7 +799,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC]}
         Sys = _systems[sysname]
 
     system = Sys()
