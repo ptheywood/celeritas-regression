@@ -99,7 +99,7 @@ class System:
                     print(f"Failed to parse power sample: {line}")
                     continue
                 else:
-                    if sm_use > 80:
+                    if sm_use > 40:  # 80 threshold lead to some jobs not capturing gpu usage on GH200, testing a lower threshold
                         gpu_power.append(power)
         gpu_power = np.array(gpu_power, dtype=np.float32)
         if gpu_power.size == 0:
@@ -641,11 +641,13 @@ async def run_celeritas(system: System, results_dir, inp):
             'stdout': out.decode().splitlines(),
         }
 
-    if proc_gpu_power:
+    # if json decoding of result failed, and proc_gpu_power was enabled, jobs would fail here? as "result" was not a key
+    if proc_gpu_power and "result" in result:
         res = result["result"]
         if "runner" in res:
             res = res["runner"]
-        res['gpu_energy_wh'] = energy_wh
+        # json.dump error 'Object of type float32 is not JSON serializable)
+        res['gpu_energy_wh'] = float(energy_wh)
         res['gpu_power'] = gpu_power.tolist()
 
     if proc.returncode:
