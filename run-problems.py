@@ -424,6 +424,7 @@ class JadeARC(System):
             raise FileNotFoundError(exe)
         args.extend([str(exe), "-"])
 
+        print(cmd, args)
         return asyncio.create_subprocess_exec(
             cmd, *args,
             stdin=asyncio.subprocess.PIPE,
