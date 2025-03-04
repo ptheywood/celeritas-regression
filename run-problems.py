@@ -335,7 +335,7 @@ class JadeARC(System):
         "orange": _CELER_ROOT / 'build-ndebug'
     }
     name = "jadearc"
-    num_jobs = 1 # 8 MI300X per node
+    num_jobs = 8 # 8 MI300X per node
     gpu_per_job = 1
     cpu_per_job = 16 # 128 core per node
     power_sample_interval = 1.0  # seconds
