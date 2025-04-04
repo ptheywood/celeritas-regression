@@ -435,6 +435,20 @@ class JadeARC(System):
     def filter_problems(self, inputs):
         return [i for i in inputs if i['_geometry'] != "vecgeom"]
 
+class Waimea(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/exatepp/celeritas/build-reldeb-novg"),
+        # 'vecgeom': Path("/home/ptheywood/code/exatepp/celeritas/build-reldeb"),
+    }
+    name = "waimea"
+    num_jobs = 2 # 2 * 3090
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 6 # 6c12t (old) CPU (i7-5930K)
+
+    def filter_problems(self, inputs):
+        """vecgeom build failed to link (ubuntu issue not worth fixing just for 3090 testing."""
+        return [i for i in inputs if i['_geometry'] != "vecgeom"]
+
 regression_dir = Path(__file__).parent
 input_dir = regression_dir / "input"
 
@@ -795,7 +809,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Waimea]}
         Sys = _systems[sysname]
 
     system = Sys()

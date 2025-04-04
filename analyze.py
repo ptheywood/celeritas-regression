@@ -49,21 +49,25 @@ KERNEL_ORDERING = {
 CPU_POWER_PER_TASK= {
     "frontier": 225 / 8, # 64-core AMD “Optimized 3rd Gen EPYC”
     "perlmutter": 280 / 4, # AMD EPYC 7453
+    "waimea": 140 / 2, # 6 core i7-5930K shared between 2 gpus
 }
 GPU_POWER_PER_TASK = {
     "wildstyle": 250, # V100
     "frontier": 500 / 2, # MI250x
     "perlmutter": 250, # A100
+    "waimea": 370, # RTX 3090
 }
 CPU_PER_TASK = {
     "wildstyle": 32,
     "frontier": 7, # 64 total, 8 reserved
     "perlmutter": 16,
+    "waimea": 6, # 6c 12t / 2. 
 }
 TASK_PER_NODE = {
     "wildstyle": 2,
     "frontier": 8,
     "perlmutter": 4,
+    "waimea": 2,
 }
 
 BYTES_PER_REG = 4 # 32-bit registers
