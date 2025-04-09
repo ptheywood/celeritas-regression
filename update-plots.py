@@ -618,8 +618,8 @@ def main():
     analyses["frontier"] = plot_minimal("frontier")
     analyses["perlmutter"] = plot_like = plot_all("perlmutter")
     analyses["jadearc"] = plot_minimal("jadearc")
-    # analyses["bede"] = plot_minimal("bede")
-    # analyses["waimea"] = plot_minimal("waimea")
+    analyses["bede"] = plot_minimal("bede")
+    analyses["waimea"] = plot_minimal("waimea")
 
 
     # Compare multiple systems
