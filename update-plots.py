@@ -25,11 +25,11 @@ import analyze
 # NOTE: these are the *used* values. Frontier reserves a core for system
 # processes.
 system_color = {
-    "frontier": "#BC5544", # red, AMD
-    "perlmutter": "#7A954F",  # green, nvidia
-    "jadearc": "#E7298A", # Colour brewer Dark 2 Pink, AMD
-    "bede": "#1B9E77", # Colour Brewer Dark 2 green, nvidia
-    "waimea": "#666666", # Colour Brewer Dark 2 grey, nv
+    "frontier": "#BC5544CC", # red, AMD
+    "perlmutter": "#7A954FCC",  # green, nvidia
+    "jadearc": "#E7298ACC", # Colour brewer Dark 2 Pink, AMD
+    "bede": "#1B9E77CC", # Colour Brewer Dark 2 green, nvidia
+    "waimea": "#666666CC", # Colour Brewer Dark 2 grey, nv
 }
 
 # archgeo_colors = {k: np.array(v, dtype=float) / 255 for k, v in {
