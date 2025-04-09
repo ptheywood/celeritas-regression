@@ -218,14 +218,6 @@
    "version": "0.5.1"
   }
  },
- "atlas-tilecal-orange-gpu+g4": {
-  "name": [
-   "atlas-tilecal",
-   "orange",
-   "gpu+g4"
-  ],
-  "result": "No instances ran successfully"
- },
  "atlas-tilecal-vecgeom-cpu": {
   "input": {
    "enable_msc": false,
@@ -817,14 +809,6 @@
    "vecgeom": null,
    "version": "0.5.1"
   }
- },
- "cms-hgcal-orange-gpu+g4": {
-  "name": [
-   "cms-hgcal",
-   "orange",
-   "gpu+g4"
-  ],
-  "result": "No instances ran successfully"
  },
  "cms-hgcal-vecgeom-cpu": {
   "input": {
@@ -3457,14 +3441,6 @@
    "vecgeom": null,
    "version": "0.5.1"
   }
- },
- "testem3-composite+field+msc-geant4-g4": {
-  "name": [
-   "testem3-composite+field+msc",
-   "geant4",
-   "g4"
-  ],
-  "result": "No instances ran successfully"
  },
  "testem3-composite+field+msc-orange-cpu": {
   "input": {
