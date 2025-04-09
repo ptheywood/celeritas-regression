@@ -418,22 +418,6 @@
    "version": "0.5.1"
   }
  },
- "cms-hgcal-orange-cpu": {
-  "name": [
-   "cms-hgcal",
-   "orange",
-   "cpu"
-  ],
-  "result": "No instances ran successfully"
- },
- "cms-hgcal-orange-cpu+g4": {
-  "name": [
-   "cms-hgcal",
-   "orange",
-   "cpu+g4"
-  ],
-  "result": "No instances ran successfully"
- },
  "cms-hgcal-orange-gpu": {
   "input": {
    "enable_msc": false,
