@@ -27,6 +27,9 @@ import analyze
 system_color = {
     "frontier": "#BC5544", # red, AMD
     "perlmutter": "#7A954F",  # green, nvidia
+    "jadearc": "#d95f02", # Colour brewer Dark 2 orange, AMD
+    "bede": "#1B9E77", # Colour Brewer Dark 2 green, nvidia
+    "waimea": "#66A61E", # Colour Brewer Dark 2 light green, nv
 }
 
 # archgeo_colors = {k: np.array(v, dtype=float) / 255 for k, v in {
@@ -423,6 +426,25 @@ def plot_per_node(plot_like, analyses, rates):
     grid = ax.grid(which='both')
     return fig
 
+def plot_per_gpu(plot_like, analyses, rates):
+    (fig, ax) = plt.subplots(layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['cpu', 'gpu', 'g4']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            # v *= analyze.TASK_PER_NODE[k]
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                s.set_label(f"{k.title()} ({arch.upper()})")
+    ax.legend(loc='lower left')
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per GPU [event/s]")
+    analyze.annotate_metadata(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
 
 def plot_power(plot_like, analyses, rates):
     (fig, ax) = plt.subplots(layout="constrained")
@@ -573,6 +595,8 @@ def main():
     # Plot individual results
     analyses["frontier"] = plot_minimal("frontier")
     analyses["perlmutter"] = plot_like = plot_all("perlmutter")
+    analyses["jadearc"] = plot_all("jadearc")
+    analyses["bede"] = plot_like = plot_all("bede")
 
     # Compare multiple systems
     plots_dir = Path("plots")
@@ -585,12 +609,19 @@ def main():
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
     plt.close()
 
+    fig = plot_per_gpu(plot_like, analyses, rates)
+    fig.savefig(plots_dir / "event-per-gpu.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-gpu.png", transparent=False, dpi=150)
+    plt.close()
+
     fig = plot_power(plot_like, analyses, rates)
     fig.savefig(plots_dir / "event-per-energy.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-energy.png", transparent=False, dpi=150)
 
     # Plot kernels
-    plot_kernels(analyses["perlmutter"], analyses["frontier"], "testem3-flat+field+msc")
+    # plot_kernels(analyses["perlmutter"], analyses["frontier"], "testem3-flat+field+msc")
+    plot_kernels(analyses["bede"], analyses["jadearc"], "testem3-flat+field+msc")
+
 
 if __name__ == '__main__':
     main()
