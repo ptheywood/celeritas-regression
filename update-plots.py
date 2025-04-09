@@ -408,7 +408,7 @@ def plot_all(system):
 
 
 def plot_per_node(plot_like, analyses, rates):
-    (fig, ax) = plt.subplots(layout="constrained", subplot_kw=dict(yscale="log"))
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
     for k in analyses:
         r = rates[k]
         for arch in ['cpu', 'gpu', 'g4']:
@@ -419,7 +419,7 @@ def plot_per_node(plot_like, analyses, rates):
             for s in scat:
                 s.set_color(system_color[k])
                 s.set_label(f"{k.title()} ({arch.upper()})")
-    ax.legend(loc='lower left')
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Throughput per node [event/s]")
     analyze.annotate_metadata(ax, plot_like)
@@ -427,7 +427,7 @@ def plot_per_node(plot_like, analyses, rates):
     return fig
 
 def plot_per_gpu(plot_like, analyses, rates):
-    (fig, ax) = plt.subplots(layout="constrained", subplot_kw=dict(yscale="log"))
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
     for k in analyses:
         r = rates[k]
         for arch in ['cpu', 'gpu', 'g4']:
@@ -438,7 +438,7 @@ def plot_per_gpu(plot_like, analyses, rates):
             for s in scat:
                 s.set_color(system_color[k])
                 s.set_label(f"{k.title()} ({arch.upper()})")
-    ax.legend(loc='lower left')
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Throughput per GPU [event/s]")
     analyze.annotate_metadata(ax, plot_like)
@@ -447,7 +447,7 @@ def plot_per_gpu(plot_like, analyses, rates):
 
 
 def plot_power(plot_like, analyses, rates):
-    (fig, ax) = plt.subplots(layout="constrained")
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained")
     for k in analyses:
         r = rates[k]
         for arch in ['cpu', 'gpu', 'g4']:
@@ -463,7 +463,7 @@ def plot_power(plot_like, analyses, rates):
                 s.set_color(system_color[k])
                 s.set_label(f"{k.title()} ({arch.upper()})")
 
-    ax.legend()
+    ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Efficiency [event/W-h]")
     analyze.annotate_metadata(ax, plot_like)
@@ -595,8 +595,10 @@ def main():
     # Plot individual results
     analyses["frontier"] = plot_minimal("frontier")
     analyses["perlmutter"] = plot_like = plot_all("perlmutter")
-    analyses["jadearc"] = plot_all("jadearc")
-    analyses["bede"] = plot_like = plot_all("bede")
+    analyses["jadearc"] = plot_minimal("jadearc")
+    # analyses["bede"] = plot_minimal("bede")
+    # analyses["waimea"] = plot_minimal("waimea")
+
 
     # Compare multiple systems
     plots_dir = Path("plots")
@@ -605,22 +607,23 @@ def main():
              for (k, v) in analyses.items()}
 
     fig = plot_per_node(plot_like, analyses, rates)
-    fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
     plt.close()
 
     fig = plot_per_gpu(plot_like, analyses, rates)
-    fig.savefig(plots_dir / "event-per-gpu.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-gpu.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-gpu.png", transparent=False, dpi=150)
     plt.close()
 
     fig = plot_power(plot_like, analyses, rates)
-    fig.savefig(plots_dir / "event-per-energy.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-energy.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-energy.png", transparent=False, dpi=150)
 
     # Plot kernels
+    # @todo plot kernels with more than just perlmutter and frontier
     # plot_kernels(analyses["perlmutter"], analyses["frontier"], "testem3-flat+field+msc")
-    plot_kernels(analyses["bede"], analyses["jadearc"], "testem3-flat+field+msc")
+    # plot_kernels(analyses["bede"], analyses["jadearc"], "testem3-flat+field+msc")
 
 
 if __name__ == '__main__':
