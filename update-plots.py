@@ -447,6 +447,27 @@ def plot_per_task(plot_like, analyses, rates):
     grid = ax.grid(which='both')
     return fig
 
+
+def plot_per_task_gpu(plot_like, analyses, rates):
+    # plot per task
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            # v *= analyze.TASK_PER_NODE[k] # don't multiple by tasks per node, for roughtly per gpu perf.
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                s.set_label(f"{k.title()} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per Task (i.e GPU) [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
 def plot_power(plot_like, analyses, rates):
     (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained")
     for k in analyses:
@@ -615,6 +636,11 @@ def main():
     fig = plot_per_task(plot_like, analyses, rates)
     # fig.savefig(plots_dir / "event-per-task.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-task.png", transparent=False, dpi=150)
+    plt.close()
+
+    fig = plot_per_task_gpu(plot_like, analyses, rates)
+    # fig.savefig(plots_dir / "event-per-task-gpu-only.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-task-gpu-only.png", transparent=False, dpi=150)
     plt.close()
 
     fig = plot_power(plot_like, analyses, rates)
