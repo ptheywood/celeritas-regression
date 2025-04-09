@@ -74,7 +74,7 @@ TASK_PER_NODE = {
     "wildstyle": 2,
     "frontier": 8,
     "perlmutter": 4,
-    "jadearc": 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
+    "jadearc": 8, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
     "bede": 1, # single GH200 per node.
     "waimea": 2,
 }
@@ -351,7 +351,8 @@ class Analysis:
     @property
     def successful(self):
         # Protect against NaN for celer-g4 run
-        unconverged_celersim = self.result['unconverged'] > 0
+        # unconverged_celersim = self.result['unconverged'] > 0
+        unconverged_celersim = self.result['unconverged'] > 0 if 'unconverged' in self.result else False
         return self.valid & ~(self.celersim & unconverged_celersim)
 
     def plot_results(self, ax, df):
@@ -587,6 +588,32 @@ def annotate_metadata(obj, md, **kwargs):
         # Assume data from a single result
         name = "/".join(md['name'])
         s = f"{name}.{md['instance']}\nv{md['version']} on {md['system']}"
+
+    try:
+        # Assume obj is axes to get layout coordinates
+        transform = obj.transAxes
+    except AttributeError:
+        # Hope obj is a figure
+        transform = None
+
+    text_kwargs = dict(va='bottom', ha='right',
+        fontstyle='italic', color=(0.5,)*3, size='xx-small',
+        transform=transform,
+        zorder=-100
+    )
+    text_kwargs.update(kwargs)
+
+    return obj.text(0.98, 0.02, s, **text_kwargs)
+
+def annotate_metadata_no_system(obj, md, **kwargs):
+    """Draw a little caption on a figure or axis with result metadata.
+    """
+    if isinstance(md, Analysis):
+        s = f"v{md.version}"
+    else:
+        # Assume data from a single result
+        name = "/".join(md['name'])
+        s = f"{name}.{md['instance']}\nv{md['version']}"
 
     try:
         # Assume obj is axes to get layout coordinates

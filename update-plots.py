@@ -422,7 +422,7 @@ def plot_per_node(plot_like, analyses, rates):
     ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Throughput per node [event/s]")
-    analyze.annotate_metadata(ax, plot_like)
+    analyze.annotate_metadata_no_system(ax, plot_like)
     grid = ax.grid(which='both')
     return fig
 
@@ -443,7 +443,7 @@ def plot_per_task(plot_like, analyses, rates):
     ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Throughput per Task (i.e GPU) [event/s]")
-    analyze.annotate_metadata(ax, plot_like)
+    analyze.annotate_metadata_no_system(ax, plot_like)
     grid = ax.grid(which='both')
     return fig
 
@@ -467,7 +467,7 @@ def plot_power(plot_like, analyses, rates):
     ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Efficiency [event/W-h]")
-    analyze.annotate_metadata(ax, plot_like)
+    analyze.annotate_metadata_no_system(ax, plot_like)
     grid = ax.grid(which='both')
     return fig
 
