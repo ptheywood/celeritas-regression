@@ -27,9 +27,9 @@ import analyze
 system_color = {
     "frontier": "#BC5544", # red, AMD
     "perlmutter": "#7A954F",  # green, nvidia
-    "jadearc": "#d95f02", # Colour brewer Dark 2 orange, AMD
+    "jadearc": "#E7298A", # Colour brewer Dark 2 Pink, AMD
     "bede": "#1B9E77", # Colour Brewer Dark 2 green, nvidia
-    "waimea": "#66A61E", # Colour Brewer Dark 2 light green, nv
+    "waimea": "#666666", # Colour Brewer Dark 2 grey, nv
 }
 
 # archgeo_colors = {k: np.array(v, dtype=float) / 255 for k, v in {
