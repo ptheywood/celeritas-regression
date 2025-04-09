@@ -628,6 +628,44 @@ def main():
     rates = {k: calc_events_per_task_sec(v, plot_like)
              for (k, v) in analyses.items()}
 
+    combinations = [
+        ["frontier", "perlmutter"],
+        ["frontier", "perlmutter", "jadearc"],
+        ["frontier", "perlmutter", "bede"],
+        ["frontier", "perlmutter", "waimea"],
+        ["frontier", "perlmutter", "jadearc", "bede"],
+        ["frontier", "perlmutter", "jadearc", "bede", "waimea"],
+        ["frontier", "jadearc"],
+        ["perlmutter", "bede"],
+        ["perlmutter", "bede", "waimea"],
+        ["jadearc", "bede"],
+        ["jadearc", "bede", "waimea"],
+    ]
+
+    for combo in combinations:
+        ident = "-".join(combo)
+        print(f"combo plots: {ident}")
+        combo_plots_dir = plots_dir / "combinations"
+        combo_plots_dir.mkdir(exist_ok=True)
+
+        analyses_copy = {k: analyses[k] for k in combo}
+
+        fig = plot_per_node(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_task(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-task-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_task_gpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-task-gpu-only-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_power(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-energy-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
     fig = plot_per_node(plot_like, analyses, rates)
     # fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
