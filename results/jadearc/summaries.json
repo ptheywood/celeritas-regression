@@ -1,11 +1,39 @@
 {
  "atlas-tilecal-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": null,
+   "geometry_name": "atlas-tilecal.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "atlas-tilecal",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.14218491717940437,
+    "avg_time_per_primary": 0.005410072914134615,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.163980216,
+    "total_time": 112.529516614
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "atlas-tilecal-orange-cpu": {
   "input": {
@@ -258,12 +286,40 @@
   }
  },
  "cms-hgcal-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": null,
+   "geometry_name": "cms-hgcal.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "cms-hgcal",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.050461822314878606,
+    "avg_time_per_primary": 0.015243816690384614,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 1.250725038,
+    "total_time": 317.07138716
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "cms-hgcal-orange-cpu": {
   "input": {
@@ -516,28 +572,120 @@
   }
  },
  "cms2018+field+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "cms2018.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "cms2018+field+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.0759823021220474,
+    "avg_time_per_primary": 0.010123814990432693,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 16.941558101,
+    "total_time": 210.575351801
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "cms2018-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": null,
+   "geometry_name": "cms2018.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "cms2018",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.15765566726551083,
+    "avg_time_per_primary": 0.004879182477692308,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 17.82897918,
+    "total_time": 101.486995536
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem15+field+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem15.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem15+field+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.23343857807064616,
+    "avg_time_per_primary": 0.003295216992788462,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.066934732,
+    "total_time": 68.54051345
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem15+field+msc-orange-cpu": {
   "input": {
@@ -810,12 +958,44 @@
   }
  },
  "testem15+field-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem15.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem15+field",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.2747926848482411,
+    "avg_time_per_primary": 0.0027993131245673077,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.062897999,
+    "total_time": 58.225712991
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem15+field-orange-cpu": {
   "input": {
@@ -1178,12 +1358,40 @@
   }
  },
  "testem15-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": null,
+   "geometry_name": "testem15.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem15",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.37144809495468817,
+    "avg_time_per_primary": 0.002070897063894231,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.064679972,
+    "total_time": 43.074658929
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem15-orange-cpu": {
   "input": {
@@ -1436,12 +1644,44 @@
   }
  },
  "testem3-composite+field+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem3-composite.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-composite+field+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.08075285436533283,
+    "avg_time_per_primary": 0.009525740919951923,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.077628936,
+    "total_time": 198.135411135
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-composite+field+msc-orange-cpu": {
   "input": {
@@ -1810,12 +2050,40 @@
   }
  },
  "testem3-composite+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": null,
+   "geometry_name": "testem3-composite.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-composite+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.09981994374173637,
+    "avg_time_per_primary": 0.007706183157355769,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.149254042,
+    "total_time": 160.288609673
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-composite+msc-orange-cpu": {
   "input": {
@@ -2072,12 +2340,44 @@
   }
  },
  "testem3-expanded+field+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem3-expanded.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-expanded+field+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.0831971020466271,
+    "avg_time_per_primary": 0.009245884175144232,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.081141813,
+    "total_time": 192.314390843
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-expanded+field+msc-orange-cpu": {
   "input": {
@@ -2350,12 +2650,44 @@
   }
  },
  "testem3-flat+field+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem3-flat.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-flat+field+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.08788574864641611,
+    "avg_time_per_primary": 0.008752622365721153,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.066466191,
+    "total_time": 182.054545207
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-flat+field+msc-orange-cpu": {
   "input": {
@@ -2724,12 +3056,44 @@
   }
  },
  "testem3-flat+field-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "geometry_name": "testem3-flat.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-flat+field",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.145099697530327,
+    "avg_time_per_primary": 0.005301394712211539,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.065288091,
+    "total_time": 110.269010014
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-flat+field-orange-cpu": {
   "input": {
@@ -2998,12 +3362,40 @@
   }
  },
  "testem3-flat+msc-geant4-g4": {
+  "input": {
+   "enable_msc": true,
+   "field": null,
+   "geometry_name": "testem3-flat.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-flat+msc",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.10818526997928193,
+    "avg_time_per_primary": 0.0071103096510096156,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.10775526,
+    "total_time": 147.894440741
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-flat+msc-orange-cpu": {
   "input": {
@@ -3260,12 +3652,40 @@
   }
  },
  "testem3-flat-geant4-g4": {
+  "input": {
+   "enable_msc": false,
+   "field": null,
+   "geometry_name": "testem3-flat.gdml",
+   "merge_events": null,
+   "num_track_slots": 4096,
+   "use_device": null
+  },
   "name": [
    "testem3-flat",
    "geant4",
    "g4"
   ],
-  "result": "No instances ran successfully"
+  "result": [
+   {
+    "avg_event_per_time": 0.18312621734497814,
+    "avg_time_per_primary": 0.004200549655769231,
+    "gpu_energy_wh": 0.0,
+    "num_events": 16,
+    "num_primaries": 20800,
+    "setup_time": 0.064411821,
+    "total_time": 87.37143284
+   }
+  ],
+  "system": {
+   "build_type": null,
+   "debug": false,
+   "geant4": "11.0.4",
+   "occupancy": null,
+   "openmp": null,
+   "sizes": null,
+   "vecgeom": null,
+   "version": "0.5.1"
+  }
  },
  "testem3-flat-orange-cpu": {
   "input": {
