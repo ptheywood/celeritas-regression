@@ -26,7 +26,7 @@ GEO_COLORS = {
     'geant4': '#9F239D',
 }
 ARCH_SHAPES = {
-    'gpu': 'x',
+    'gpu': 'X',
     'cpu': 's',
     'gpu+g4': '+',
     'cpu+g4': 'd',

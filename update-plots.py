@@ -445,6 +445,69 @@ def plot_per_node(plot_like, analyses, rates):
     return fig
 
 
+def plot_per_node_all(plot_like, analyses, rates):
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu', 'cpu', 'g4', 'gpu+g4', 'cpu+g4']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            v *= analyze.TASK_PER_NODE[k]
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per node [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+
+def plot_per_node_gpu_cpu(plot_like, analyses, rates):
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu', 'cpu']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            v *= analyze.TASK_PER_NODE[k]
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per node [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+
+def plot_per_node_gpu(plot_like, analyses, rates):
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            v *= analyze.TASK_PER_NODE[k]
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per node [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+
 def plot_per_task(plot_like, analyses, rates):
     # plot per task
     (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
@@ -697,6 +760,14 @@ def main():
         fig.savefig(combo_plots_dir / f"event-per-node-{ident}.png", transparent=False, dpi=150)
         plt.close()
 
+        fig = plot_per_node_gpu_cpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-gpu-cpu-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_node_gpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-gpu-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
         fig = plot_per_task(plot_like, analyses_copy, rates)
         fig.savefig(combo_plots_dir / f"event-per-task-{ident}.png", transparent=False, dpi=150)
         plt.close()
@@ -717,6 +788,12 @@ def main():
     fig = plot_per_node(plot_like, analyses, rates)
     # fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
+    plt.close()
+
+
+    fig = plot_per_node_all(plot_like, analyses, rates)
+    # fig.savefig(plots_dir / "event-per-node-all.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-node-all.png", transparent=False, dpi=150)
     plt.close()
 
     fig = plot_per_task(plot_like, analyses, rates)
