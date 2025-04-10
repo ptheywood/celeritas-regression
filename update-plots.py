@@ -28,7 +28,7 @@ system_color = {
     "frontier": "#BC5544CC", # red, AMD
     "perlmutter": "#7A954FCC",  # green, nvidia
     "jadearc": "#E7298ACC", # Colour brewer Dark 2 Pink, AMD
-    "bede": "#1B9E77CC", # Colour Brewer Dark 2 green, nvidia
+    "bede": "#7570B3CC", # Colour Brewer Dark 2 purple, nvidia
     "waimea": "#666666CC", # Colour Brewer Dark 2 grey, nv
 }
 
