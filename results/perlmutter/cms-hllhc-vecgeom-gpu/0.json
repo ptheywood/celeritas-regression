@@ -1,0 +1,71 @@
+{
+"_environ": {
+"HSA_OVERRIDE_CPU_AFFINITY_DEBUG": "0",
+"OMP_NUM_THREADS": "1"
+},
+"input": {
+"_exe": "celer-sim",
+"_geometry": "vecgeom",
+"_inits_per_track": 64,
+"_instance": 0,
+"_name": [
+"cms-hllhc",
+"vecgeom",
+"gpu"
+],
+"_num_streams": 1,
+"_outdir": "cms-hllhc-vecgeom-gpu",
+"_timeout": 600.0,
+"_tracks_per_process": 1048576,
+"_use_celeritas": true
+},
+"result": {
+"exception": {
+"condition": "cudaPeekAtLastError()",
+"file": "/global/cfs/cdirs/atlas/esseivaj/devel/celeritas/src/geocel/vg/VecgeomParams.cc",
+"line": 554,
+"type": "RuntimeError",
+"what": "an illegal memory access was encountered",
+"which": "CUDA"
+}
+},
+"stderr": [
+"srun: Job 36074795 step creation temporarily disabled, retrying (Requested nodes are busy)",
+"srun: Step created for StepId=36074795.8",
+"cpu-bind=MASK - nid200265, task  0  0 [811914]: mask 0xffff000000000000ffff00000000 set",
+"status: Initializing Geant4 run manager",
+"status: Initializing Geant4 geometry and physics list",
+"info: Loading Geant4 geometry from GDML at /global/cfs/cdirs/atlas/esseivaj/devel/regression/input/cms-hllhc.gdml",
+"G4Material: warning: duplicate name of material Borated_Polyethyl.",
+"status: Building Geant4 physics tables",
+"status: Transferring data from Geant4",
+"/global/cfs/cdirs/atlas/esseivaj/devel/celeritas/src/celeritas/ext/GeantImporter.cc:473: warning: Optical materials were requested but none are present",
+"status: Loading external elemental data",
+"status: Initializing problem",
+"status: Converting Geant4 geometry",
+"status: Initializing tracking information",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"/tmp/esseivaj/spack-stage/spack-stage-vecgeom-1.2.10-irrjt4jnphco4fqv5rsnqx7uoqg5k2fx/spack-src/source/backend/cuda/Interface.cpp:30: error: CUDA call failed: an illegal memory access was encountered",
+"An error occurred while calculating GPU memory usage for 'VecgeomParams.build_tracking (start = 2030305280, stop = 18446744073709551615): celeritas: CUDA error: an illegal memory access was encountered",
+"An error occurred while calculating GPU memory usage for 'VecgeomParams.construct (start = 2030305280, stop = 18446744073709551615): celeritas: CUDA error: an illegal memory access was encountered",
+"An error occurred while calculating GPU memory usage for 'setup::problem (start = 2030305280, stop = 18446744073709551615): celeritas: CUDA error: an illegal memory access was encountered",
+"An error occurred while calculating GPU memory usage for 'celer-sim.run (start = 0, stop = 18446744073709551615): celeritas: CUDA error: an illegal memory access was encountered",
+"/global/cfs/cdirs/atlas/esseivaj/devel/celeritas/app/celer-sim/celer-sim.cc:274: critical: While running input at <stdin>: celeritas: CUDA error: an illegal memory access was encountered",
+"status: Saving output",
+"srun: error: nid200265: task 0: Exited with exit code 1",
+"srun: Terminating StepId=36074795.8"
+]
+}

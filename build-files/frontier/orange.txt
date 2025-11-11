@@ -17,11 +17,17 @@
 //No help, variable specified on the command line.
 BUILD_SHARED_LIBS:BOOL=OFF
 
+//Build Celeritas executables (strongly recommended)
+CELERITAS_BUILD_APPS:BOOL=ON
+
 //Build Celeritas documentation
 CELERITAS_BUILD_DOCS:BOOL=OFF
 
 //Build Celeritas unit tests
 CELERITAS_BUILD_TESTS:BOOL=ON
+
+//Fetch and build CLI11
+CELERITAS_BUILTIN_CLI11:BOOL=
 
 //Fetch and build GTest
 CELERITAS_BUILTIN_GTest:BOOL=
@@ -98,6 +104,9 @@ CELERITAS_USE_VecGeom:BOOL=OFF
 //The directory containing a CMake configuration file for CLHEP.
 CLHEP_DIR:PATH=/lustre/orion/world-shared/hep143/opt/rocmcc-6.2.4/clhep/2.4.7.1/i5b6/lib/CLHEP-2.4.7.1
 
+//The directory containing a CMake configuration file for CLI11.
+CLI11_DIR:PATH=/lustre/orion/world-shared/hep143/opt-view/share/cmake/CLI11
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/opt/rocm-6.2.4/llvm/bin/llvm-addr2line
 
@@ -111,7 +120,7 @@ CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CRAYPE_LINKTYPE:STRING=
 
 //saved value of LOADEDMODULES environment variable
-CMAKE_CRAYPE_LOADEDMODULES:STRING=libfabric/1.22.0:craype-network-ofi:xpmem/2.10.6-1.2_gfaa90a94be64:Core/24.07:tmux/3.4:hsi/default:lfs-wrapper/0.0.1:DefApps:git/2.45.1:PrgEnv-amd/8.6.0:cray-dsmml/0.3.0:cray-pmi/6.1.15:craype/2.7.33:perftools-base/24.11.0:cpe/24.11:amd/6.2.4:cray-mpich/8.1.31:rocm/6.2.4:craype-x86-trento:miniforge3/23.11.0-0:glibc/2.38:g4abla/3.3:g4channeling/1.0:g4emlow/8.6.1:g4ensdfstate/3.0:g4incl/1.2:g4ndl/4.7.1:g4nudexlib/1.0:g4particlexs/4.1:g4photonevaporation/6.1:g4pii/1.3:g4radioactivedecay/6.1.2:g4realsurface/2.2:g4saiddata/2.0:g4tendl/1.4:g4urrpt/1.1:geant4-data/11.3.0
+CMAKE_CRAYPE_LOADEDMODULES:STRING=libfabric/1.22.0:craype-network-ofi:xpmem/2.10.6-1.2_gfaa90a94be64:Core/25.03:tmux/3.4:hsi/default:lfs-wrapper/0.0.1:DefApps:git/2.47.0:PrgEnv-amd/8.6.0:cray-dsmml/0.3.0:cray-pmi/6.1.15:craype/2.7.33:perftools-base/24.11.0:cpe/24.11:amd/6.2.4:cray-mpich/8.1.31:rocm/6.2.4:craype-x86-trento:miniforge3/23.11.0-0:glibc/2.38:g4abla/3.3:g4channeling/1.0:g4emlow/8.6.1:g4ensdfstate/3.0:g4incl/1.2:g4ndl/4.7.1:g4nudexlib/1.0:g4particlexs/4.1:g4photonevaporation/6.1:g4pii/1.3:g4radioactivedecay/6.1.2:g4realsurface/2.2:g4saiddata/2.0:g4tendl/1.4:g4urrpt/1.1:geant4-data/11.3.0
 
 //No help, variable specified on the command line.
 CMAKE_CUDA_FLAGS_RELEASE:UNINITIALIZED=-O3 -DNDEBUG
@@ -311,16 +320,16 @@ CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 CMAKE_PROJECT_NAME:STATIC=Celeritas
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION:STATIC=0.5.2
+CMAKE_PROJECT_VERSION:STATIC=0.6.0
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION_MAJOR:STATIC=0
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION_MINOR:STATIC=5
+CMAKE_PROJECT_VERSION_MINOR:STATIC=6
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION_PATCH:STATIC=2
+CMAKE_PROJECT_VERSION_PATCH:STATIC=0
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION_TWEAK:STATIC=
@@ -425,10 +434,10 @@ EXPAT_LIBRARY:PATH=/lustre/orion/world-shared/hep143/opt/rocmcc-6.2.4/expat/2.7.
 EXPAT_LIBRARY_RELEASE:FILEPATH=/lustre/orion/world-shared/hep143/opt/rocmcc-6.2.4/expat/2.7.0/6bwx/lib/libexpat.so
 
 //Path to a program.
-GITCOMMAND:FILEPATH=/sw/frontier/spack-envs/core-24.07/opt/gcc-7.5.0/git-2.45.1-gi57plzwxhttln3zysj2dbhuvgtnkis4/bin/git
+GITCOMMAND:FILEPATH=/sw/frontier/spack-envs/core-25.03/opt/gcc-13.2/git-2.47.0-wuqnvcdpidp4sx6as3xc7z7bkni5qwp3/bin/git
 
 //Git command line client
-GIT_EXECUTABLE:FILEPATH=/sw/frontier/spack-envs/core-24.07/opt/gcc-7.5.0/git-2.45.1-gi57plzwxhttln3zysj2dbhuvgtnkis4/bin/git
+GIT_EXECUTABLE:FILEPATH=/sw/frontier/spack-envs/core-25.03/opt/gcc-13.2/git-2.47.0-wuqnvcdpidp4sx6as3xc7z7bkni5qwp3/bin/git
 
 //The directory containing a CMake configuration file for GTest.
 GTest_DIR:PATH=/lustre/orion/world-shared/hep143/opt-view/lib64/cmake/GTest
@@ -481,9 +490,6 @@ PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 //The directory containing a CMake configuration file for PTL.
 PTL_DIR:PATH=/lustre/orion/world-shared/hep143/opt-view/lib64/cmake/Geant4/PTL
 
-//Path to a library.
-ROCTX_LIBRARY:FILEPATH=/opt/rocm-6.2.4/lib/libroctx64.so
-
 //Name of the computer/site where compile is being run
 SITE:STRING=login02
 
@@ -521,6 +527,8 @@ pkgcfg_lib_PC_EXPAT_m:FILEPATH=/usr/lib64/libm.so
 
 //Default number of processes to use in CeleritasAddTest
 CELERITASTEST_NP_DEFAULT:INTERNAL=1
+//ADVANCED property for variable: CELERITAS_BUILTIN_CLI11
+CELERITAS_BUILTIN_CLI11-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CELERITAS_BUILTIN_GTest
 CELERITAS_BUILTIN_GTest-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CELERITAS_BUILTIN_nlohmann_json
@@ -747,13 +755,15 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CTEST_SUBMIT_RETRY_DELAY
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //Version string and hash for Celeritas
-Celeritas_GIT_DESCRIBE:INTERNAL=0.5.2;-rc.1;;/ccs/home/s3j/Code/celeritas/.git/worktrees/celeritas-frontier/HEAD;20250324.161347
+Celeritas_GIT_DESCRIBE:INTERNAL=0.6.0;-rc.3;;/ccs/home/s3j/Code/celeritas/.git/worktrees/celeritas-frontier/HEAD;20250421.105507
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: EXPAT_INCLUDE_DIR
 EXPAT_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: EXPAT_LIBRARY
 EXPAT_LIBRARY-ADVANCED:INTERNAL=1
+//Details about finding CLI11
+FIND_PACKAGE_MESSAGE_DETAILS_CLI11:INTERNAL=[/lustre/orion/world-shared/hep143/opt-view/share/cmake/CLI11/CLI11Config.cmake][v2.5.0(2.4)]
 //Details about finding GTest
 FIND_PACKAGE_MESSAGE_DETAILS_GTest:INTERNAL=[/lustre/orion/world-shared/hep143/opt-view/lib64/cmake/GTest/GTestConfig.cmake][c ][v1.15.2(1.10)]
 //Details about finding Geant4

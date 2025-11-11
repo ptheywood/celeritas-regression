@@ -260,7 +260,7 @@ class Analysis:
                 return text[1:]
             return text
 
-        for s in summaries.values():
+        for (k, s) in summaries.items():
             try:
                 temp_sys = s["system"]
             except KeyError:
@@ -268,6 +268,9 @@ class Analysis:
             else:
                 if isinstance(temp_sys, list):
                     versions.update(_lstripv(ts["version"]) for ts in temp_sys)
+                elif temp_sys is None:
+                    print("WARNING: missing version for summary", k)
+                    continue
                 else:
                     versions.add(_lstripv(temp_sys["version"]))
         if len(versions) > 1:
