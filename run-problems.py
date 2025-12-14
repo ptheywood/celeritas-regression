@@ -788,9 +788,7 @@ async def run_celeritas(system: System, results_dir, inp):
     run_delta = time.monotonic() - start
     start = time.monotonic()
 
-    # if json decoding of result failed, and proc_gpu_power was enabled, jobs would fail here? as "result" was not a key
-    if proc_gpu_power and "result" in result:
-    # if proc_gpu_power:
+    if proc_gpu_power:
         energy_wh, gpu_power = await system.compute_gpu_energy(proc_gpu_power)
 
     try:
@@ -802,7 +800,9 @@ async def run_celeritas(system: System, results_dir, inp):
             'stdout': out.decode().splitlines(),
         }
 
-    if proc_gpu_power:
+    # if json decoding of result failed, and proc_gpu_power was enabled, jobs would fail here? as "result" was not a key
+    if proc_gpu_power and "result" in result:
+    # if proc_gpu_power:
         res = result["result"]
         if "runner" in res:
             res = res["runner"]
