@@ -81,8 +81,8 @@ CPU_PER_TASK = {
     "jadearc": 16, # 128 cores per node, with 8 GPUs
     "bede": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
     "awe": 24, # 24c per node, 2 gpus
-    "blackmass": 16, # 16 c 32 t 1 GPU
-    "blackmass_cu130": 16, # 16 c 32 t 1 GPU
+    "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
+    "blackmass_cu130": 8, # 16 c 32 t 1 GPU, but device OOM
     "mavericks": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
 }
 TASK_PER_NODE = {
