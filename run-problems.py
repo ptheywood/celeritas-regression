@@ -449,9 +449,9 @@ class Awe(System):
     gpu_per_job = 1 # 1 GPU per job
     cpu_per_job = 12 # 24 cores total, 2 gpus. 
 
-    # def filter_problems(self, inputs):
-    #     """vecgeom build failed to link (ubuntu issue not worth fixing just for 3090 testing."""
-    #     return [i for i in inputs if i['_geometry'] != "vecgeom"]
+    # no vecgeom builds on AMD
+    def filter_problems(self, inputs):
+        return [i for i in inputs if i['_geometry'] != "vecgeom"]
 
 class Blackmass(System):
     build_dirs = {
