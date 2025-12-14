@@ -26,7 +26,7 @@ GEO_COLORS = {
     'geant4': '#9F239D',
 }
 ARCH_SHAPES = {
-    'gpu': 'x',
+    'gpu': 'X',
     'cpu': 's',
     'gpu+g4': '+',
     'cpu+g4': 'd',
@@ -51,7 +51,15 @@ KERNEL_ORDERING = {
 
 CPU_POWER_PER_TASK= {
     "frontier": 225 / 8, # 64-core AMD “Optimized 3rd Gen EPYC”
-    "perlmutter": 280 / 4, # AMD EPYC 7453
+    "perlmutter": 280 / 4, # AMD EPYC 7453,
+    "jadearc": 280 / 4, # 4 GPU per AMD EPYC 9534 64-Core
+    "bede": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
+    "awe": 350 / 2 # 7960X 24-Cores, shared between 2 7900XTX.
+    "blackmass": 180, # 2950X 16-Core Processor, 1 3080
+    "blackmass_cu130": 180, # 2950X 16-Core Processor, 1 3080
+    "mavericks": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
+
+
 }
 GPU_POWER_PER_TASK = {
     "wildstyle": 250, # V100
@@ -59,16 +67,34 @@ GPU_POWER_PER_TASK = {
     "frontier": 100, # estimated
     # "perlmutter": 250, # A100
     "perlmutter": 100, # based on real-world usage
+    "jadearc": 750, # MI300x 750W "Typical Board Power"
+    "bede": 900, # GH200 480GB @ 900W
+    "awe": 355, # 2x 7900 XTX 
+    "blackmass": 320, # 3080
+    "blackmass_cu130": 320, # 3080
+    "mavericks": 250, # 3x Titan v
 }
 CPU_PER_TASK = {
     "wildstyle": 32,
     "frontier": 7, # 64 total, 8 reserved
     "perlmutter": 16,
+    "jadearc": 16, # 128 cores per node, with 8 GPUs
+    "bede": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
+    "awe": 24, # 24c per node, 2 gpus
+    "blackmass": 16, # 16 c 32 t 1 GPU
+    "blackmass_cu130": 16, # 16 c 32 t 1 GPU
+    "mavericks": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
 }
 TASK_PER_NODE = {
     "wildstyle": 2,
     "frontier": 8,
     "perlmutter": 4,
+    "jadearc": 8, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
+    "bede": 1, # single GH200 per node.
+    "awe": 1, # 2 gpus, but onyl using 1 for now
+    "blackmass": 1, # 1 gpu
+    "blackmass_cu130": 1, # 1 gpu
+    "mavericks": 1, #3, # 3 GPUs, but only using one? 
 }
 
 BYTES_PER_REG = 4 # 32-bit registers
@@ -373,7 +399,7 @@ class Analysis:
     @property
     def successful(self):
         # Protect against NaN for celer-g4 run
-        unconverged_celersim = self.result['unconverged'] > 0
+        unconverged_celersim = self.result['unconverged'] > 0 if 'unconverged' in self.result else False
         return self.valid & ~(self.celersim & unconverged_celersim)
 
     def plot_results(self, ax, df):
@@ -626,6 +652,32 @@ def annotate_metadata(obj, md, **kwargs):
 
     return obj.text(0.98, 0.02, s, **text_kwargs)
 
+
+def annotate_metadata_no_system(obj, md, **kwargs):
+    """Draw a little caption on a figure or axis with result metadata.
+    """
+    if isinstance(md, Analysis):
+        s = f"v{md.version}"
+    else:
+        # Assume data from a single result
+        name = "/".join(md['name'])
+        s = f"{name}.{md['instance']}\nv{md['version']}"
+
+    try:
+        # Assume obj is axes to get layout coordinates
+        transform = obj.transAxes
+    except AttributeError:
+        # Hope obj is a figure
+        transform = None
+
+    text_kwargs = dict(va='bottom', ha='right',
+        fontstyle='italic', color=(0.5,)*3, size='xx-small',
+        transform=transform,
+        zorder=-100
+    )
+    text_kwargs.update(kwargs)
+
+    return obj.text(0.98, 0.02, s, **text_kwargs)
 
 def make_failure_table(failures):
     if failures is None:
