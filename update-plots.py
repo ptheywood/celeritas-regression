@@ -27,6 +27,13 @@ import analyze
 system_color = {
     "frontier": "#BC5544", # red, AMD
     "perlmutter": "#7A954F",  # green, nvidia
+    "jadearc": "#E7298ACC", # Colour brewer Dark 2 Pink, AMD
+    "bede": "#1B9E77CC", # Colour Brewer Dark 2 green, nvidia
+    "awe": "#d95f02CC", # Colour Brewer  dark 2 orange, AMD
+    "blackmass": "#666666CC", # Colour Brewer Dark 2 grey, nv
+    "blackmass_cu130": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
+    "mavericks": "#a6761dCC", # colour brewer dark 2 brown, nv
+
 }
 
 # archgeo_colors = {k: np.array(v, dtype=float) / 255 for k, v in {
@@ -47,6 +54,30 @@ archgeo_markers = {
     "cuda/vecgeom": ".",
     "cuda/orange": "+",
     "hip/orange": "x",
+}
+
+# Hacky fix to change the name of the machine in the legend. 
+alt_system_labels = {
+    "frontier": "Frontier",
+    "perlmutter": "Perlmutter",
+    "jadearc": "JADE 2.5",
+    "bede": "Bede GH200",
+    "awe": "7900XTX"
+    "blackmass": "RTX 3080",
+    "blackmass_cu130": "RTX 3080 CUDA 13.0",
+    "mavericks": "Titan V",
+
+}
+
+system_gpu_label = {
+    "frontier": "MI250X",
+    "perlmutter": "A100",
+    "jadearc": "MI300X",
+    "bede": "GH200",
+    "awe": "7900XTX"
+    "blackmass": "RTX 3080",
+    "blackmass_cu130": "RTX 3080 CUDA 13.0",
+    "mavericks": "Titan V",
 }
 
 JOULE_PER_WH = 3600
@@ -405,24 +436,113 @@ def plot_all(system):
 
 
 def plot_per_node(plot_like, analyses, rates):
-    (fig, ax) = plt.subplots(layout="constrained", subplot_kw=dict(yscale="log"))
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
     for k in analyses:
         r = rates[k]
-        for arch in ['cpu', 'gpu', 'g4']:
+        for arch in ['gpu', 'cpu', 'g4']:
             # events per task-sec
             v = r[r.index.get_level_values("arch") == arch].copy()
             v *= analyze.TASK_PER_NODE[k]
             scat = plot_like.plot_results(ax, v)
             for s in scat:
                 s.set_color(system_color[k])
-                s.set_label(f"{k.title()} ({arch.upper()})")
-    ax.legend(loc='lower left')
+                # s.set_label(f"{k.title()} ({arch.upper()})")
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    # ax.legend(loc='lower left')
     ax.set_xlabel("Problem")
     ax.set_ylabel("Throughput per node [event/s]")
-    analyze.annotate_metadata(ax, plot_like)
+    # analyze.annotate_metadata(ax, plot_like)
+    analyze.annotate_metadata_no_system(ax, plot_like)
     grid = ax.grid(which='both')
     return fig
 
+
+def plot_per_node_gpu(plot_like, analyses, rates):
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            v *= analyze.TASK_PER_NODE[k]
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per node [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+def plot_per_task(plot_like, analyses, rates):
+    # plot per task
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu', 'cpu', 'g4']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            # v *= analyze.TASK_PER_NODE[k] # don't multiple by tasks per node, for roughtly per gpu perf.
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = alt_system_labels[k] if k in alt_system_labels else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per Task (i.e GPU) [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+
+def plot_per_task_gpu(plot_like, analyses, rates):
+    # plot per task
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            # v *= analyze.TASK_PER_NODE[k] # don't multiple by tasks per node, for roughtly per gpu perf.
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = system_gpu_label[k] if k in system_gpu_label else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per Task (i.e GPU) [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
+
+
+def plot_per_task_gpu_g4(plot_like, analyses, rates):
+    # plot per task
+    (fig, ax) = plt.subplots(figsize=(6, 4), layout="constrained", subplot_kw=dict(yscale="log"))
+    for k in analyses:
+        r = rates[k]
+        for arch in ['gpu', 'gpu+g4']:
+            # events per task-sec
+            v = r[r.index.get_level_values("arch") == arch].copy()
+            # v *= analyze.TASK_PER_NODE[k] # don't multiple by tasks per node, for roughtly per gpu perf.
+            scat = plot_like.plot_results(ax, v)
+            for s in scat:
+                s.set_color(system_color[k])
+                system_name = system_gpu_label[k] if k in system_gpu_label else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
+    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
+    ax.set_xlabel("Problem")
+    ax.set_ylabel("Throughput per Task (i.e GPU) [event/s]")
+    analyze.annotate_metadata_no_system(ax, plot_like)
+    grid = ax.grid(which='both')
+    return fig
 
 def plot_power(plot_like, analyses, rates):
     (fig, ax) = plt.subplots(layout="constrained")
@@ -439,12 +559,16 @@ def plot_power(plot_like, analyses, rates):
             scat = plot_like.plot_results(ax, v)
             for s in scat:
                 s.set_color(system_color[k])
-                s.set_label(f"{k.title()} ({arch.upper()})")
+                # s.set_label(f"{k.title()} ({arch.upper()})")
+                system_name = system_gpu_label[k] if k in system_gpu_label else k.title()
+                s.set_label(f"{system_name} ({arch.upper()})")
 
-    ax.legend()
+    # ax.legend()
+    ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
     ax.set_xlabel("Problem")
     ax.set_ylabel("Efficiency [event/W-h]")
-    analyze.annotate_metadata(ax, plot_like)
+    # analyze.annotate_metadata(ax, plot_like)
+    analyze.annotate_metadata_no_system(ax, plot_like)
     grid = ax.grid(which='both')
     return fig
 
@@ -573,6 +697,12 @@ def main():
     # Plot individual results
     analyses["frontier"] = plot_minimal("frontier")
     analyses["perlmutter"] = plot_like = plot_all("perlmutter")
+    # analyses["jadearc"] = plot_minimal("jadearc")
+    # analyses["bede"] = plot_minimal("bede")
+    # analyses["awe"] = plot_minimal("awe")
+    # analyses["blackmass"] = plot_minimal("blackmass")
+    # analyses["mavericks"] = plot_minimal("mavericks")
+
 
     # Compare multiple systems
     plots_dir = Path("plots")
@@ -580,17 +710,85 @@ def main():
     rates = {k: calc_events_per_task_sec(v, plot_like)
              for (k, v) in analyses.items()}
 
+
+    combinations = [
+        ["frontier", "perlmutter"],
+        # ["frontier", "perlmutter", "jadearc"],
+        # ["frontier", "perlmutter", "bede"],
+        # ["frontier", "perlmutter", "waimea"],
+        # ["frontier", "perlmutter", "jadearc", "bede"],
+        # ["frontier", "perlmutter", "jadearc", "bede", "waimea"],
+        # ["frontier", "jadearc"],
+        # ["perlmutter", "bede"],
+        # ["perlmutter", "bede", "waimea"],
+        # ["jadearc", "bede"],
+        # ["jadearc", "bede", "waimea"],
+    ]
+
+    for combo in combinations:
+        ident = "-".join(combo)
+        print(f"combo plots: {ident}")
+        combo_plots_dir = plots_dir / "combinations"
+        combo_plots_dir.mkdir(exist_ok=True)
+
+        analyses_copy = {k: analyses[k] for k in combo}
+
+        fig = plot_per_node(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_node_gpu_cpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-gpu-cpu-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_node_gpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-node-gpu-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_task(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-task-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_task_gpu(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-task-gpu-only-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        fig = plot_per_task_gpu_g4(plot_like, analyses_copy, rates)
+        fig.savefig(combo_plots_dir / f"event-per-task-gpu-g4-{ident}.png", transparent=False, dpi=150)
+        plt.close()
+
+        # No need, limited data at th mo so just all will do.
+        # fig = plot_power(plot_like, analyses_copy, rates)
+        # fig.savefig(combo_plots_dir / f"event-per-energy-{ident}.png", transparent=False, dpi=150)
+        # plt.close()
+
+
     fig = plot_per_node(plot_like, analyses, rates)
-    fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-node.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
     plt.close()
 
+    fig = plot_per_node_all(plot_like, analyses, rates)
+    # fig.savefig(plots_dir / "event-per-node-all.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-node-all.png", transparent=False, dpi=150)
+    plt.close()
+
+    fig = plot_per_task(plot_like, analyses, rates)
+    # fig.savefig(plots_dir / "event-per-task.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-task.png", transparent=False, dpi=150)
+    plt.close()
+
+    fig = plot_per_task_gpu(plot_like, analyses, rates)
+    # fig.savefig(plots_dir / "event-per-task-gpu-only.pdf", transparent=True)
+    fig.savefig(plots_dir / "event-per-task-gpu-only.png", transparent=False, dpi=150)
+    plt.close()
+
     fig = plot_power(plot_like, analyses, rates)
-    fig.savefig(plots_dir / "event-per-energy.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-energy.pdf", transparent=True)
     fig.savefig(plots_dir / "event-per-energy.png", transparent=False, dpi=150)
 
     # Plot kernels
-    plot_kernels(analyses["perlmutter"], analyses["frontier"], "testem3-flat+field+msc")
+    # plot_kernels(analyses["perlmutter"], analyses["frontier"], "testem3-flat+field+msc")
 
 if __name__ == '__main__':
     main()

@@ -99,7 +99,7 @@ class System:
                     print(f"Failed to parse power sample: {line}")
                     continue
                 else:
-                    if sm_use > 80:
+                    if sm_use > 40:  # 80 threshold lead to some jobs not capturing gpu usage on GH200, testing a lower threshold
                         gpu_power.append(power)
         gpu_power = np.array(gpu_power, dtype=np.float32)
         if gpu_power.size == 0:
@@ -293,6 +293,195 @@ class Perlmutter(Frontier):
 
     def filter_problems(self, inputs):
         return inputs
+
+
+class Bede(System):
+    #  User must be a member of the bdshe19 project on N8CIR Bede & have activated the spack env
+    build_dirs = {
+        'orange': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug-novg"),
+        'vecgeom': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug"),
+    }
+    name = "bede"
+    num_jobs = 1 # 1 GH200 480GB per gh partition node
+    gpu_per_job = 1
+    cpu_per_job = 72 # 72 CPU cores per GH200
+    cpu_per_job_g4 = int(cpu_per_job // 2) # celer-g4 encounters cuda out of memory errors with high cpu per gpu count
+    power_sample_interval = 1.0  # seconds
+
+    def create_gpu_power_monitor_subprocess(self, inp):
+        """
+        Create a subprocess that monitors GPU power usage using nvidia-smi
+
+        Must be using ampere+ GPUs, each sample measures the average power draw over 1s
+
+        Returns:
+            subprocess: the power monitor subprocess
+        """
+        cmd = "nvidia-smi"
+        args = ['dmon', '-i', str(inp['_instance']), '--select', 'pu', '--options', 'DT']
+        return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
+
+    def get_runtime_environ(self, inp):
+        # Get the environment for the generic System
+        env = super().get_runtime_environ(inp)
+
+        # celer-g4 encounters cuda out of mem errors on GH200 with 72 CPU threads but a single 96GiB GPU.
+        # use a different cpu count in this case.
+        if inp['_exe'] == "celer-g4" and inp['use_device']:
+            env['G4FORCENUMBEROFTHREADS'] = str(self.cpu_per_job_g4)
+
+        # return the updated environment
+        return env
+
+
+class JadeARC(System):
+    _CELER_ROOT = Path(environ['HOME']) / 'celeritas-project' / 'celeritas'
+    build_dirs = {
+        "orange": _CELER_ROOT / 'build-ndebug'
+    }
+    name = "jadearc"
+    num_jobs = 1 # 8 MI300X per node
+    gpu_per_job = 1
+    cpu_per_job = 16 # 128 core per node
+    power_sample_interval = 1.0  # seconds
+
+    def get_runtime_environ(self, inp):
+        env = super().get_runtime_environ(inp)
+        # env["HSA_OVERRIDE_CPU_AFFINITY_DEBUG"] = "0"
+        return env
+
+    # def create_gpu_power_monitor_subprocess(self, inp):
+    #     """
+    #     Create a subprocess that monitors GPU power usage using amd-smi
+
+    #     @todo - unclear if this is instantaneous or time-sampled power consumption from the very sparse amd docs
+
+    #     Returns:
+    #         subprocess: the power monitor subprocess
+    #     """
+    #     cmd = "amd-smi"
+    #     args = ['monitor', '-g', str(inp['_instance']), '-ptum', '-w', str(self.power_sample_interval), "--csv"]
+    #     return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
+
+    # async def compute_gpu_energy(self, power_monitor_subprocess: asyncio.subprocess.Process):
+    #     """
+    #     Terminate the power monitor subprocess and compute the total energy consumed
+
+    #     Returns:
+    #         energy_wh: total energy consumed in watt-hours
+    #         gpu_power: array of GPU power samples in watts (average power draw over 1s)
+    #     """
+    #     if power_monitor_subprocess is None:
+    #         return 0, np.array([])
+
+    #     power_monitor_subprocess.terminate()
+    #     out, _ = await communicate_with_timeout(power_monitor_subprocess, 5)
+
+    #     if power_monitor_subprocess.returncode:
+    #         print(f"Power monitor exited with code {power_monitor_subprocess.returncode}")
+    #         return 0, np.array([])
+
+    #     lines = out.decode().splitlines()
+    #     gpu_power = []
+    #     for line in lines:
+    #         if re.match('^[0-9]+', line):
+    #             line_cols = line.split(",")
+    #             try:
+    #                 power = float(line_cols[2])
+    #                 gfx_use = int(line_cols[5])
+    #             except (IndexError, ValueError):
+    #                 print(f"Failed to parse power sample: {line}")
+    #                 continue
+    #             else:
+    #                 if gfx_use > 0: # sometimes this seems to be stuck at 100 when gpu is not being used and idles at 200W...
+    #                     gpu_power.append(power)
+    #     gpu_power = np.array(gpu_power, dtype=np.float32)
+    #     if gpu_power.size == 0:
+    #         print("No GPU power samples found")
+    #         return 0, np.array([])
+    #     energy_ws = np.sum(np.multiply(gpu_power, self.power_sample_interval))
+    #     print(f"{energy_ws} watts-secs {simpson(gpu_power)}")
+    #     energy_wh = energy_ws / 3600
+    #     return energy_wh, gpu_power
+
+    def create_celer_subprocess(self, inp):
+        cmd = "srun"
+
+        env = dict(environ)
+        env.update(self.get_runtime_environ(inp))
+
+        args = [
+            f"--cpus-per-task={self.cpu_per_job}",
+        ]
+        if inp['use_device']:
+            args.append("--gpus-per-task=1")
+            args.append("--gpu-bind=verbose,closest")
+        else:
+            args.append("--gpus=0")
+
+        try:
+            build = self.build_dirs[inp["_geometry"]]
+        except KeyError:
+            raise RuntimeError("Geometry type unavailable")
+
+        exe = build / "bin" / inp['_exe']
+        if not exe.exists():
+            raise FileNotFoundError(exe)
+        args.extend([str(exe), "-"])
+
+        return asyncio.create_subprocess_exec(
+            cmd, *args,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            env=env,
+        )
+
+    def filter_problems(self, inputs):
+        return [i for i in inputs if i['_geometry'] != "vecgeom"]
+
+class Awe(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg"),
+    }
+    name = "awe"
+    num_jobs = 1 # 2 * 7900XTX but only using 1
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 12 # 24 cores total, 2 gpus. 
+
+    # def filter_problems(self, inputs):
+    #     """vecgeom build failed to link (ubuntu issue not worth fixing just for 3090 testing."""
+    #     return [i for i in inputs if i['_geometry'] != "vecgeom"]
+
+class Blackmass(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas-cu126/build-ndebug-novg"),
+        'vecgeom': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas-cu126/build-ndebug"),
+    }
+    name = "blackmass"
+    num_jobs = 1 # 1 3080
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 16 # 16c 32t CPU
+
+class BlackmassCU130(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg"),
+        'vecgeom': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug"),
+    }
+    name = "blackmass_cu130"
+    num_jobs = 1 # 1 3080
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 16 # 16c 32t CPU 
+
+class Mavericks(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg"),
+        'vecgeom': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug"),
+    }
+    name = "mavericks"
+    num_jobs = 1 # 3 titan v, only uisng 1
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 6 # 6c12t (old) CPU (i7-5930K)
 
 regression_dir = Path(__file__).parent
 input_dir = regression_dir / "input"
@@ -599,7 +788,9 @@ async def run_celeritas(system: System, results_dir, inp):
     run_delta = time.monotonic() - start
     start = time.monotonic()
 
-    if proc_gpu_power:
+    # if json decoding of result failed, and proc_gpu_power was enabled, jobs would fail here? as "result" was not a key
+    if proc_gpu_power and "result" in result:
+    # if proc_gpu_power:
         energy_wh, gpu_power = await system.compute_gpu_energy(proc_gpu_power)
 
     try:
@@ -615,7 +806,9 @@ async def run_celeritas(system: System, results_dir, inp):
         res = result["result"]
         if "runner" in res:
             res = res["runner"]
-        res['gpu_energy_wh'] = energy_wh
+        # res['gpu_energy_wh'] = energy_wh
+        # json.dump error 'Object of type float32 is not JSON serializable)
+        res['gpu_energy_wh'] = float(energy_wh)
         res['gpu_power'] = gpu_power.tolist()
 
     if proc.returncode:
@@ -657,7 +850,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks]}
         Sys = _systems[sysname]
 
     system = Sys()
