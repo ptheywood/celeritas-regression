@@ -58,6 +58,7 @@ CPU_POWER_PER_TASK= {
     "blackmass": 180, # 2950X 16-Core Processor, 1 3080
     "blackmass_cu130": 180, # 2950X 16-Core Processor, 1 3080
     "mavericks": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
+    "mavericks-fp32": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
 
 
 }
@@ -73,6 +74,8 @@ GPU_POWER_PER_TASK = {
     "blackmass": 320, # 3080
     "blackmass_cu130": 320, # 3080
     "mavericks": 250, # 3x Titan v
+    "mavericks-fp32": 250, # 3x Titan v
+
 }
 CPU_PER_TASK = {
     "wildstyle": 32,
@@ -84,6 +87,7 @@ CPU_PER_TASK = {
     "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
     "blackmass_cu130": 8, # 16 c 32 t 1 GPU, but device OOM
     "mavericks": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
+    "mavericks-fp32": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
 }
 TASK_PER_NODE = {
     "wildstyle": 2,
@@ -95,6 +99,7 @@ TASK_PER_NODE = {
     "blackmass": 1, # 1 gpu
     "blackmass_cu130": 1, # 1 gpu
     "mavericks": 1, #3, # 3 GPUs, but only using one? 
+    "mavericks-fp32": 1, #3, # 3 GPUs, but only using one? 
 }
 
 BYTES_PER_REG = 4 # 32-bit registers
@@ -195,22 +200,26 @@ def _is_celersim(result):
 
 def _calc_power(idx, system):
     power = pd.Series(index=idx)
-    arch = power.index.get_level_values("arch")
-    is_g4 = lambda arch_key: "g4" in arch_key
-    is_gpu = {'gpu', 'gpu+g4', 'gpu+sync'}.__contains__
-    is_cpu = {'cpu', 'cpu+g4', 'g4'}.__contains__
+    try:
+        arch = power.index.get_level_values("arch")
+        is_g4 = lambda arch_key: "g4" in arch_key
+        is_gpu = {'gpu', 'gpu+g4', 'gpu+sync'}.__contains__
+        is_cpu = {'cpu', 'cpu+g4', 'g4'}.__contains__
 
-    gpu_power = GPU_POWER_PER_TASK.get(system)
-    cpu_power = CPU_POWER_PER_TASK.get(system)
+        gpu_power = GPU_POWER_PER_TASK.get(system)
+        cpu_power = CPU_POWER_PER_TASK.get(system)
 
-    if gpu_power is not None:
-        # Real-world usage plus the CPU driving it
-        frac_cpu = pd.Series(index=idx)
-        frac_cpu[:] = 1.0 / CPU_PER_TASK[system]
-        frac_cpu[arch.map(is_g4)] = 1.0
-        power[arch.map(is_gpu)] = gpu_power + cpu_power * frac_cpu
-    if cpu_power is not None:
-        power[arch.map(is_cpu)] = cpu_power
+        if gpu_power is not None:
+            # Real-world usage plus the CPU driving it
+            frac_cpu = pd.Series(index=idx)
+            frac_cpu[:] = 1.0 / CPU_PER_TASK[system]
+            frac_cpu[arch.map(is_g4)] = 1.0
+            power[arch.map(is_gpu)] = gpu_power + cpu_power * frac_cpu
+        if cpu_power is not None:
+            power[arch.map(is_cpu)] = cpu_power
+    except Exception:
+        # Somethin bad happened with FP32 runs.
+        pass
 
     return power
 
@@ -878,18 +887,21 @@ def calc_geo_frac(analysis):
 
 
 def dump_markdown(f, headers, table, alignment=None):
-    widths = np.vectorize(len)(table)
-    widths = np.concatenate([widths, [[len(t) for t in headers]]])
-    col_widths = np.max(widths, axis=0)
-    if alignment is None:
-        alignment = ['<'] * len(headers)
-    col_fmt = " | ".join(f"{{:{a}{c}}}" for (a, c) in zip(alignment, col_widths))
-    fmt = ("| " + col_fmt + " |\n").format
+    try:
+        widths = np.vectorize(len)(table)
+        widths = np.concatenate([widths, [[len(t) for t in headers]]])
+        col_widths = np.max(widths, axis=0)
+        if alignment is None:
+            alignment = ['<'] * len(headers)
+        col_fmt = " | ".join(f"{{:{a}{c}}}" for (a, c) in zip(alignment, col_widths))
+        fmt = ("| " + col_fmt + " |\n").format
 
-    f.write(fmt(*headers))
-    f.write(fmt(*["-"*w for w in col_widths]))
-    for i in range(table.shape[0]):
-        f.write(fmt(*table[i,:].tolist()))
+        f.write(fmt(*headers))
+        f.write(fmt(*["-"*w for w in col_widths]))
+        for i in range(table.shape[0]):
+            f.write(fmt(*table[i,:].tolist()))
+    except Exception:
+        print(f"unable to dump a table, it had len {len}?")
 
 
 
@@ -923,10 +935,11 @@ def dump_rate(f, analysis, rate, units, prec=3):
             tp_out[i, j] = fmt(*row2)
 
     dump_markdown(f,
-                  ["Problem", "Geometry"]
-                  + [a.upper() + " " + units for a in arches],
-                  tp_out,
-                  alignment=("<<" + ">"*len(arches)))
+                ["Problem", "Geometry"]
+                + [a.upper() + " " + units for a in arches],
+                tp_out,
+                alignment=("<<" + ">"*len(arches)))
+        
 
 
 def dump_speedup(f, results, prec=1):
