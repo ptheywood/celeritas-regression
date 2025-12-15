@@ -119,7 +119,7 @@ class System:
         except KeyError:
             build = PurePath("nonexistent")
         cmd = build / "bin" / inp['_exe']
-        print("cmd: {cmd}")
+        print(f"cmd: {cmd}")
 
         env = dict(environ)
         env.update(self.get_runtime_environ(inp))
