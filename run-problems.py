@@ -484,6 +484,17 @@ class Mavericks(System):
     gpu_per_job = 1 # 1 GPU per job
     cpu_per_job = 6 # 6c12t (old) CPU (i7-5930K)
 
+class MavericksFP32(System):
+    build_dirs = {
+        'orange-fp32': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg-fp32"),
+    }
+    name = "mavericks-fp32"
+    num_jobs = 1 # 3 titan v, only uisng 1
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 6 # 6c12t (old) CPU (i7-5930K)
+
+
+
 regression_dir = Path(__file__).parent
 input_dir = regression_dir / "input"
 
@@ -851,7 +862,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks, MavericksFP32]}
         Sys = _systems[sysname]
 
     system = Sys()
