@@ -32,6 +32,7 @@ system_color = {
     "awe": "#d95f02CC", # Colour Brewer  dark 2 orange, AMD
     "blackmass": "#666666CC", # Colour Brewer Dark 2 grey, nv
     "blackmass_cu130": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
+    "blackmass-cu130-fp32": "#FF0000",
     "mavericks": "#a6761dCC", # colour brewer dark 2 brown, nv
     "mavericks-fp32": "#00ff00",
 
@@ -66,6 +67,7 @@ alt_system_labels = {
     "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
+    "blackmass-cu130-fp32": "RTX 3080 CUDA 13.0 FP32",
     "mavericks": "Titan V",
     "mavericks-fp32": "Titan V FP32",
 
@@ -79,6 +81,7 @@ system_gpu_label = {
     "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
+    "blackmass-cu130-fp32": "RTX 3080 CUDA 13.0 FP32",
     "mavericks": "Titan V",
     "mavericks-fp32": "Titan V FP32",
 }
@@ -707,6 +710,7 @@ def main():
     analyses["blackmass"] = plot_minimal("blackmass")
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
     analyses["mavericks"] = plot_minimal("mavericks")
+    analyses["blackmass-cu130-fp32"] = plot_minimal("blackmass-cu130-fp32")
     analyses["mavericks-fp32"] = plot_minimal("mavericks-fp32")
 
 
@@ -730,7 +734,7 @@ def main():
         # ["jadearc", "bede"],
         # ["jadearc", "bede", "waimea"],
         ["awe", "bede", "blackmass", "blackmass_cu130", "mavericks"],#, "mavericks-fp32"],
-        ["awe", "bede", "blackmass", "blackmass_cu130", "mavericks", "mavericks-fp32"],
+        ["awe", "bede", "blackmass", "blackmass_cu130", "blackmass-cu130-fp32",  "mavericks", "mavericks-fp32"],
 
     ]
 

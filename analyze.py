@@ -57,6 +57,7 @@ CPU_POWER_PER_TASK= {
     "awe": 350 / 2, # 7960X 24-Cores, shared between 2 7900XTX.
     "blackmass": 180, # 2950X 16-Core Processor, 1 3080
     "blackmass_cu130": 180, # 2950X 16-Core Processor, 1 3080
+    "blackmass-cu130-fp32": 180, # 2950X 16-Core Processor, 1 3080
     "mavericks": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
     "mavericks-fp32": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
 
@@ -73,6 +74,7 @@ GPU_POWER_PER_TASK = {
     "awe": 355, # 2x 7900 XTX 
     "blackmass": 320, # 3080
     "blackmass_cu130": 320, # 3080
+    "blackmass-cu130-fp32": 320, # 3080
     "mavericks": 250, # 3x Titan v
     "mavericks-fp32": 250, # 3x Titan v
 
@@ -86,6 +88,7 @@ CPU_PER_TASK = {
     "awe": 24, # 24c per node, 2 gpus
     "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
     "blackmass_cu130": 8, # 16 c 32 t 1 GPU, but device OOM
+    "blackmass-cu130-fp32": 8, # 16 c 32 t 1 GPU, but device OOM
     "mavericks": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
     "mavericks-fp32": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
 }
@@ -98,6 +101,7 @@ TASK_PER_NODE = {
     "awe": 1, # 2 gpus, but onyl using 1 for now
     "blackmass": 1, # 1 gpu
     "blackmass_cu130": 1, # 1 gpu
+    "blackmass-cu130-fp32": 1, # 1 gpu
     "mavericks": 1, #3, # 3 GPUs, but only using one? 
     "mavericks-fp32": 1, #3, # 3 GPUs, but only using one? 
 }

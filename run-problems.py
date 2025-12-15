@@ -475,6 +475,16 @@ class BlackmassCU130(System):
     gpu_per_job = 1 # 1 GPU per job
     cpu_per_job = 16 # 16c 32t CPU 
 
+class BlackmassCU130FP32(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg-fp32"),
+    }
+    name = "blackmass-cu130-fp32"
+    num_jobs = 1 # 1 3080
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 16 # 16c 32t CPU 
+
+
 class Mavericks(System):
     build_dirs = {
         'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg"),
