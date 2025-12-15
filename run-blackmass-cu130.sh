@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-spack env activate celeritas-cu126
-module load CUDA/12.6
+spack env activate celeritas-cu130
+module load CUDA/13.0
 module load gcc/11
 
 module list 2>&1
