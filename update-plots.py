@@ -67,7 +67,7 @@ alt_system_labels = {
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "mavericks": "Titan V",
-    "mavericks": "Titan V FP32",
+    "mavericks-fp32": "Titan V FP32",
 
 }
 
@@ -80,7 +80,7 @@ system_gpu_label = {
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "mavericks": "Titan V",
-    "mavericks": "Titan V FP32",
+    "mavericks-fp32": "Titan V FP32",
 }
 
 JOULE_PER_WH = 3600
