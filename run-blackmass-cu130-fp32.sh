@@ -9,6 +9,6 @@ nvidia-smi
 lscpu
 
 echo "Running on $HOSTNAME at $(date)"
-python3 run-problems.py blackmass-fp32
+python3 run-problems.py blackmass-cu130-fp32
 echo "Completed at $(date)"
 exit 0
