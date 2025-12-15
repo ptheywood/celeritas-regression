@@ -209,6 +209,7 @@ class Frontier(System):
         if not exe.exists():
             raise FileNotFoundError(exe)
         args.extend([str(exe), "-"])
+        print(f"args: {args}")
 
         return asyncio.create_subprocess_exec(
             cmd, *args,

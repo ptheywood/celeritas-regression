@@ -62,7 +62,7 @@ alt_system_labels = {
     "perlmutter": "Perlmutter",
     "jadearc": "JADE 2.5",
     "bede": "Bede GH200",
-    "awe": "7900XTX"
+    "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "mavericks": "Titan V",
@@ -74,7 +74,7 @@ system_gpu_label = {
     "perlmutter": "A100",
     "jadearc": "MI300X",
     "bede": "GH200",
-    "awe": "7900XTX"
+    "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "mavericks": "Titan V",
@@ -737,9 +737,9 @@ def main():
         fig.savefig(combo_plots_dir / f"event-per-node-{ident}.png", transparent=False, dpi=150)
         plt.close()
 
-        fig = plot_per_node_gpu_cpu(plot_like, analyses_copy, rates)
-        fig.savefig(combo_plots_dir / f"event-per-node-gpu-cpu-{ident}.png", transparent=False, dpi=150)
-        plt.close()
+        # fig = plot_per_node_gpu_cpu(plot_like, analyses_copy, rates)
+        # fig.savefig(combo_plots_dir / f"event-per-node-gpu-cpu-{ident}.png", transparent=False, dpi=150)
+        # plt.close()
 
         fig = plot_per_node_gpu(plot_like, analyses_copy, rates)
         fig.savefig(combo_plots_dir / f"event-per-node-gpu-{ident}.png", transparent=False, dpi=150)
@@ -768,10 +768,10 @@ def main():
     fig.savefig(plots_dir / "event-per-node.png", transparent=False, dpi=150)
     plt.close()
 
-    fig = plot_per_node_all(plot_like, analyses, rates)
-    # fig.savefig(plots_dir / "event-per-node-all.pdf", transparent=True)
-    fig.savefig(plots_dir / "event-per-node-all.png", transparent=False, dpi=150)
-    plt.close()
+    # fig = plot_per_node_all(plot_like, analyses, rates)
+    # # fig.savefig(plots_dir / "event-per-node-all.pdf", transparent=True)
+    # fig.savefig(plots_dir / "event-per-node-all.png", transparent=False, dpi=150)
+    # plt.close()
 
     fig = plot_per_task(plot_like, analyses, rates)
     # fig.savefig(plots_dir / "event-per-task.pdf", transparent=True)
