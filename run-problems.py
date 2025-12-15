@@ -462,7 +462,7 @@ class Blackmass(System):
     name = "blackmass"
     num_jobs = 1 # 1 3080
     gpu_per_job = 1 # 1 GPU per job
-    cpu_per_job = 8 # 16c 32t CPU
+    cpu_per_job = 16 # 16c 32t CPU
 
 class BlackmassCU130(System):
     build_dirs = {
@@ -472,7 +472,7 @@ class BlackmassCU130(System):
     name = "blackmass_cu130"
     num_jobs = 1 # 1 3080
     gpu_per_job = 1 # 1 GPU per job
-    cpu_per_job = 8 # 16c 32t CPU 
+    cpu_per_job = 16 # 16c 32t CPU 
 
 class Mavericks(System):
     build_dirs = {
