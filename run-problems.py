@@ -480,13 +480,13 @@ class Mavericks(System):
         'vecgeom': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug"),
     }
     name = "mavericks"
-    num_jobs = 1 # 3 titan v, only uisng 1
+    num_jobs = 1 # 3 titan v, only uisAdd g 1
     gpu_per_job = 1 # 1 GPU per job
     cpu_per_job = 6 # 6c12t (old) CPU (i7-5930K)
 
 class MavericksFP32(System):
     build_dirs = {
-        'orange-fp32': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg-fp32"),
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg-fp32"),
     }
     name = "mavericks-fp32"
     num_jobs = 1 # 3 titan v, only uisng 1
