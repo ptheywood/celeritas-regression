@@ -33,6 +33,7 @@ system_color = {
     "blackmass": "#666666CC", # Colour Brewer Dark 2 grey, nv
     "blackmass_cu130": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
     "blackmass-cu130-fp32": "#FF0000",
+    "blackmass-cu126-fp32": "#FF00FF",
     "mavericks": "#a6761dCC", # colour brewer dark 2 brown, nv
     "mavericks-fp32": "#00ff00",
 
@@ -68,6 +69,7 @@ alt_system_labels = {
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "blackmass-cu130-fp32": "RTX 3080 CUDA 13.0 FP32",
+    "blackmass-cu126-fp32": "RTX 3080 CUDA 12.6 FP32",
     "mavericks": "Titan V",
     "mavericks-fp32": "Titan V FP32",
 
@@ -82,6 +84,7 @@ system_gpu_label = {
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "blackmass-cu130-fp32": "RTX 3080 CUDA 13.0 FP32",
+    "blackmass-cu126-fp32": "RTX 3080 CUDA 12.6 FP32",
     "mavericks": "Titan V",
     "mavericks-fp32": "Titan V FP32",
 }
@@ -245,9 +248,12 @@ def plot_minimal(system):
     print("="* len(str(analysis)))
 
     # Check that everything is converged
-    unconv = analyze.summarize_instances(analysis.result["unconverged"])["mean"]
-    print(unconv)
-    # assert not np.any(unconv > 0)
+    try:
+        unconv = analyze.summarize_instances(analysis.result["unconverged"])["mean"]
+        print(unconv)
+        # assert not np.any(unconv > 0)
+    except Exception:
+        pass
 
     failures = analysis.failures()
     if failures is not None:
@@ -275,42 +281,45 @@ def plot_minimal(system):
 
     with open(results_dir / "power.md", "w") as f:
         dump_event_power(f, analysis)
-
-    speedup = calc_cpu_gpu_speedup(analysis)
-
-    event_rate = analyze.calc_event_rate(analysis)
-    testem3 = event_rate["mean"].xs("testem3-flat+field+msc", level="problem").unstack("arch")
     try:
-        del testem3["gpu+sync"]
-    except KeyError:
+        speedup = calc_cpu_gpu_speedup(analysis)
+
+        event_rate = analyze.calc_event_rate(analysis)
+        testem3 = event_rate["mean"].xs("testem3-flat+field+msc", level="problem").unstack("arch")
+        try:
+            del testem3["gpu+sync"]
+        except KeyError:
+            pass
+
+        ref_label = ("geant4", "g4")
+        try:
+            ref = testem3.loc[ref_label]
+        except KeyError:
+            ref_label = ("orange", "cpu")
+            ref = testem3.loc[ref_label]
+        else:
+            del testem3["g4"]
+
+        testem3.dropna(inplace=True, how="all")
+
+        print("Speedup for testem3 (relative to", "/".join(ref_label), "):")
+        print(str(testem3 / ref))
+
+        _desc = (speedup["mean"].dropna()).describe()
+        print("Speedups: {min:.1f}×–{max:.0f}×".format(**_desc))
+        _desc = 100 * (1 - 1 / speedup["mean"].dropna()).describe()
+        print("GPU capacity: {min:.0f}%–{max:.0f}%".format(**_desc))
+        _desc = (speedup["mean"].dropna() * 7).describe()
+        print("CPU:GPU equivalence: {min:.0f}×–{max:.0f}×".format(**_desc))
+
+        ### SPEEDUPS ###
+        fig = plot_speedup(analysis, speedup)
+        fig.savefig(plots_dir / "speedup.pdf", transparent=True)
+        fig.savefig(plots_dir / "speedup.png", transparent=False, dpi=150)
+        plt.close()
+
+    except Exception:
         pass
-
-    ref_label = ("geant4", "g4")
-    try:
-        ref = testem3.loc[ref_label]
-    except KeyError:
-        ref_label = ("orange", "cpu")
-        ref = testem3.loc[ref_label]
-    else:
-        del testem3["g4"]
-
-    testem3.dropna(inplace=True, how="all")
-
-    print("Speedup for testem3 (relative to", "/".join(ref_label), "):")
-    print(str(testem3 / ref))
-
-    _desc = (speedup["mean"].dropna()).describe()
-    print("Speedups: {min:.1f}×–{max:.0f}×".format(**_desc))
-    _desc = 100 * (1 - 1 / speedup["mean"].dropna()).describe()
-    print("GPU capacity: {min:.0f}%–{max:.0f}%".format(**_desc))
-    _desc = (speedup["mean"].dropna() * 7).describe()
-    print("CPU:GPU equivalence: {min:.0f}×–{max:.0f}×".format(**_desc))
-
-    ### SPEEDUPS ###
-    fig = plot_speedup(analysis, speedup)
-    fig.savefig(plots_dir / "speedup.pdf", transparent=True)
-    fig.savefig(plots_dir / "speedup.png", transparent=False, dpi=150)
-    plt.close()
 
 #    fig = plot_geo_throughput(analysis, analyze.calc_geo_frac(analysis))
 #    fig.savefig(plots_dir / "throughput-geo.pdf", transparent=True)
@@ -711,6 +720,7 @@ def main():
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
     analyses["mavericks"] = plot_minimal("mavericks")
     analyses["blackmass-cu130-fp32"] = plot_minimal("blackmass-cu130-fp32")
+    analyses["blackmass-cu126-fp32"] = plot_minimal("blackmass-cu126-fp32")
     analyses["mavericks-fp32"] = plot_minimal("mavericks-fp32")
 
 
@@ -734,7 +744,7 @@ def main():
         # ["jadearc", "bede"],
         # ["jadearc", "bede", "waimea"],
         ["awe", "bede", "blackmass", "blackmass_cu130", "mavericks"],#, "mavericks-fp32"],
-        ["awe", "bede", "blackmass", "blackmass_cu130", "blackmass-cu130-fp32",  "mavericks", "mavericks-fp32"],
+        ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32",  "mavericks", "mavericks-fp32"],
 
     ]
 

@@ -56,6 +56,7 @@ CPU_POWER_PER_TASK= {
     "bede": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
     "awe": 350 / 2, # 7960X 24-Cores, shared between 2 7900XTX.
     "blackmass": 180, # 2950X 16-Core Processor, 1 3080
+    "blackmass-cu126-fp32": 180, # 2950X 16-Core Processor, 1 3080
     "blackmass_cu130": 180, # 2950X 16-Core Processor, 1 3080
     "blackmass-cu130-fp32": 180, # 2950X 16-Core Processor, 1 3080
     "mavericks": 140 / 3, #  6 core i7-6850K CPU @ 3.60GHz, 3 V100
@@ -75,6 +76,7 @@ GPU_POWER_PER_TASK = {
     "blackmass": 320, # 3080
     "blackmass_cu130": 320, # 3080
     "blackmass-cu130-fp32": 320, # 3080
+    "blackmass-cu126-fp32": 320, # 3080
     "mavericks": 250, # 3x Titan v
     "mavericks-fp32": 250, # 3x Titan v
 
@@ -89,6 +91,7 @@ CPU_PER_TASK = {
     "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
     "blackmass_cu130": 8, # 16 c 32 t 1 GPU, but device OOM
     "blackmass-cu130-fp32": 8, # 16 c 32 t 1 GPU, but device OOM
+    "blackmass-cu126-fp32": 8, # 16 c 32 t 1 GPU, but device OOM
     "mavericks": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
     "mavericks-fp32": 12, # 4, # 6c 12t / 3, but only using 1 GPU. 
 }
@@ -102,6 +105,7 @@ TASK_PER_NODE = {
     "blackmass": 1, # 1 gpu
     "blackmass_cu130": 1, # 1 gpu
     "blackmass-cu130-fp32": 1, # 1 gpu
+    "blackmass-cu126-fp32": 1, # 1 gpu
     "mavericks": 1, #3, # 3 GPUs, but only using one? 
     "mavericks-fp32": 1, #3, # 3 GPUs, but only using one? 
 }
@@ -910,62 +914,68 @@ def dump_markdown(f, headers, table, alignment=None):
 
 
 def dump_rate(f, analysis, rate, units, prec=3):
-    assert prec == int(prec)
-    fmt = "{{:.{:d}f}} (±{{:.{:d}f}})".format(prec, prec).format
-    rate = rate.loc[:, ['mean', 'std']]
-    rate = rate.loc[rate.index.get_level_values('arch') != 'gpu+sync']
-    rate = rate.dropna(how='all', axis=0).unstack('arch')
+    try:
+            
+        assert prec == int(prec)
+        fmt = "{{:.{:d}f}} (±{{:.{:d}f}})".format(prec, prec).format
+        rate = rate.loc[:, ['mean', 'std']]
+        rate = rate.loc[rate.index.get_level_values('arch') != 'gpu+sync']
+        rate = rate.dropna(how='all', axis=0).unstack('arch')
 
-    _avail_arch = set(rate.columns.get_level_values(1))
-    arches = [_a for _a in ARCH_SHAPES if _a in _avail_arch]
-    tp_out = np.full((len(rate), 2 + len(arches)), "", dtype=object)
-    _abbrev = analysis.problem_to_abbr()
-    prev_prob = None
-    for (i, ((prob, geo), row)) in enumerate(rate.iterrows()):
-        if prob != prev_prob:
-            abbr = _abbrev[prob]
-            tp_out[i, 0] = f"{prob} [{abbr}]"
-        prev_prob = prob
-        tp_out[i, 1] = geo
-        unstacked_row = row.unstack(0)
-        for (j, a) in enumerate(arches, start=2):
-            try:
-                row2 = unstacked_row.loc[a]
-            except KeyError:
-                # Arch not applicable for this geometry
-                continue
-            if np.any(np.isnan(row2)):
-                continue
-            tp_out[i, j] = fmt(*row2)
+        _avail_arch = set(rate.columns.get_level_values(1))
+        arches = [_a for _a in ARCH_SHAPES if _a in _avail_arch]
+        tp_out = np.full((len(rate), 2 + len(arches)), "", dtype=object)
+        _abbrev = analysis.problem_to_abbr()
+        prev_prob = None
+        for (i, ((prob, geo), row)) in enumerate(rate.iterrows()):
+            if prob != prev_prob:
+                abbr = _abbrev[prob]
+                tp_out[i, 0] = f"{prob} [{abbr}]"
+            prev_prob = prob
+            tp_out[i, 1] = geo
+            unstacked_row = row.unstack(0)
+            for (j, a) in enumerate(arches, start=2):
+                try:
+                    row2 = unstacked_row.loc[a]
+                except KeyError:
+                    # Arch not applicable for this geometry
+                    continue
+                if np.any(np.isnan(row2)):
+                    continue
+                tp_out[i, j] = fmt(*row2)
 
-    dump_markdown(f,
-                ["Problem", "Geometry"]
-                + [a.upper() + " " + units for a in arches],
-                tp_out,
-                alignment=("<<" + ">"*len(arches)))
-        
+        dump_markdown(f,
+                    ["Problem", "Geometry"]
+                    + [a.upper() + " " + units for a in arches],
+                    tp_out,
+                    alignment=("<<" + ">"*len(arches)))
+    except Exception:
+        pass
 
 
 def dump_speedup(f, results, prec=1):
-    assert prec == int(prec)
-    fmt = "{{:.{:d}f}}× (±{{:.{:d}f}})".format(prec, prec).format
+    try:
+        assert prec == int(prec)
+        fmt = "{{:.{:d}f}}× (±{{:.{:d}f}})".format(prec, prec).format
 
-    speedup = get_cpugpu_ratio(results.summed['total_time']).dropna(how='all', axis=0)
-    speedup_out = np.full((len(speedup), 3), "", dtype=object)
-    _abbrev = results.problem_to_abbr()
-    prev_prob = None
-    for (i, ((prob, geo), row)) in enumerate(speedup.iterrows()):
-        if prob != prev_prob:
-            abbr = _abbrev[prob]
-            speedup_out[i, 0] = f"{prob} [{abbr}]"
-        speedup_out[i, 1] = geo
-        speedup_out[i, 2] = fmt(*row)
-        prev_prob = prob
+        speedup = get_cpugpu_ratio(results.summed['total_time']).dropna(how='all', axis=0)
+        speedup_out = np.full((len(speedup), 3), "", dtype=object)
+        _abbrev = results.problem_to_abbr()
+        prev_prob = None
+        for (i, ((prob, geo), row)) in enumerate(speedup.iterrows()):
+            if prob != prev_prob:
+                abbr = _abbrev[prob]
+                speedup_out[i, 0] = f"{prob} [{abbr}]"
+            speedup_out[i, 1] = geo
+            speedup_out[i, 2] = fmt(*row)
+            prev_prob = prob
 
-    dump_markdown(f,
-                  ["Problem", "Geometry", "Speedup"],
-                  speedup_out,
-                  alignment="<<>")
+        dump_markdown(f,
+                    ["Problem", "Geometry", "Speedup"],
+                    speedup_out,
+                    alignment="<<>")
+    except Exception:
+        pass
 
 
 def get_device_properties(analysis):

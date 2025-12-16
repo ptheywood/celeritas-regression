@@ -465,6 +465,19 @@ class Blackmass(System):
     gpu_per_job = 1 # 1 GPU per job
     cpu_per_job = 16 # 16c 32t CPU
 
+class BlackmassCU126FP32(System):
+    build_dirs = {
+        'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas-cu126/build-ndebug-novg-fp32"),
+    }
+    name = "blackmass-cu126-fp32"
+    num_jobs = 1 # 1 3080
+    gpu_per_job = 1 # 1 GPU per job
+    cpu_per_job = 8 # 16c 32t CPU
+
+    # no vecgeom builds in fp32, or g4
+    def filter_problems(self, inputs):
+        return [i for i in inputs if i['_geometry'] == "orange" and i["_exe"] == "celer-sim"]
+
 class BlackmassCU130(System):
     build_dirs = {
         'orange': Path("/home/ptheywood/code/shareing-r1-celeritas/celeritas/build-ndebug-novg"),
@@ -873,7 +886,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks, BlackmassCU130FP32, MavericksFP32]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks, BlackmassCU130FP32, MavericksFP32, BlackmassCU126FP32]}
         Sys = _systems[sysname]
 
     system = Sys()
