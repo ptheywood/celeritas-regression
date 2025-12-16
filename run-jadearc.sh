@@ -16,10 +16,11 @@ if [ -z "$SLURM_JOB_ID" ]; then
 fi
 
 # Load modules + activate spack environment
-source $HOME/celeritas-project/env/jadearc.sh 2> /dev/null
+source $DATA/shareing-r1/env/jadearc.sh 2> /dev/null
 
 echo "Running on $HOSTNAME at $(date)"
 module list 2>&1
+amd-smi list
 python3 run-problems.py jadearc
 echo "Completed at $(date)"
 exit 0
