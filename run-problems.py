@@ -339,7 +339,7 @@ class Bede(System):
 class JadeARC(System):
     _CELER_ROOT = Path(environ['DATA']) / 'shareing-r1' / 'celeritas'
     build_dirs = {
-        "orange": _CELER_ROOT / 'build-ndebug-no-vg'
+        "orange": _CELER_ROOT / 'build-ndebug-novg'
     }
     name = "jadearc"
     num_jobs = 1 # 8 MI300X per node
