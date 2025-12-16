@@ -406,38 +406,38 @@ class JadeARC(System):
     #     energy_wh = energy_ws / 3600
     #     return energy_wh, gpu_power
 
-    def create_celer_subprocess(self, inp):
-        cmd = "srun"
+    # def create_celer_subprocess(self, inp):
+    #     cmd = "srun"
 
-        env = dict(environ)
-        env.update(self.get_runtime_environ(inp))
+    #     env = dict(environ)
+    #     env.update(self.get_runtime_environ(inp))
 
-        args = [
-            f"--cpus-per-task={self.cpu_per_job}",
-        ]
-        if inp['use_device']:
-            args.append("--gpus-per-task=1")
-            args.append("--gpu-bind=verbose,closest")
-        else:
-            args.append("--gpus=0")
+    #     args = [
+    #         f"--cpus-per-task={self.cpu_per_job}",
+    #     ]
+    #     if inp['use_device']:
+    #         args.append("--gpus-per-task=1")
+    #         args.append("--gpu-bind=verbose,closest")
+    #     else:
+    #         args.append("--gpus=0")
 
-        try:
-            build = self.build_dirs[inp["_geometry"]]
-        except KeyError:
-            raise RuntimeError("Geometry type unavailable")
+    #     try:
+    #         build = self.build_dirs[inp["_geometry"]]
+    #     except KeyError:
+    #         raise RuntimeError("Geometry type unavailable")
 
-        exe = build / "bin" / inp['_exe']
-        if not exe.exists():
-            raise FileNotFoundError(exe)
-        args.extend([str(exe), "-"])
+    #     exe = build / "bin" / inp['_exe']
+    #     if not exe.exists():
+    #         raise FileNotFoundError(exe)
+    #     args.extend([str(exe), "-"])
 
-        return asyncio.create_subprocess_exec(
-            cmd, *args,
-            stdin=asyncio.subprocess.PIPE,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            env=env,
-        )
+    #     return asyncio.create_subprocess_exec(
+    #         cmd, *args,
+    #         stdin=asyncio.subprocess.PIPE,
+    #         stdout=asyncio.subprocess.PIPE,
+    #         stderr=asyncio.subprocess.PIPE,
+    #         env=env,
+    #     )
 
     def filter_problems(self, inputs):
         return [i for i in inputs if i['_geometry'] != "vecgeom"]
