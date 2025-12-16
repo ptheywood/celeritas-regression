@@ -99,7 +99,7 @@ TASK_PER_NODE = {
     "wildstyle": 2,
     "frontier": 8,
     "perlmutter": 4,
-    "jadearc": 8, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
+    "jadearc": 1, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
     "bede": 1, # single GH200 per node.
     "awe": 1, # 2 gpus, but onyl using 1 for now
     "blackmass": 1, # 1 gpu
