@@ -711,10 +711,10 @@ def main():
     analyses = {}
 
     # Plot individual results
-    analyses["frontier"] = plot_minimal("frontier")
-    analyses["perlmutter"] = plot_like = plot_all("perlmutter")
-    # analyses["jadearc"] = plot_minimal("jadearc")
-    analyses["bede"] = plot_minimal("bede")
+    # analyses["frontier"] = plot_minimal("frontier")
+    # analyses["perlmutter"] = plot_like = plot_all("perlmutter")
+    analyses["jadearc"] = plot_minimal("jadearc")
+    analyses["bede"] = plot_like = plot_minimal("bede")
     analyses["awe"] = plot_minimal("awe")
     analyses["blackmass"] = plot_minimal("blackmass")
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
@@ -743,7 +743,10 @@ def main():
         # ["perlmutter", "bede", "waimea"],
         # ["jadearc", "bede"],
         # ["jadearc", "bede", "waimea"],
-        ["awe", "bede", "blackmass", "blackmass_cu130", "mavericks"],#, "mavericks-fp32"],
+        ["awe", "jadearc", "bede", "blackmass", "blackmass_cu130", "mavericks"],#, "mavericks-fp32"],
+        ["bede" "blackmass_cu130", "mavericks"],#, 
+        ["bede", "blackmass", "mavericks"],#, 
+
         ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32",  "mavericks", "mavericks-fp32"],
 
     ]
