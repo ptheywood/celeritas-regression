@@ -741,14 +741,14 @@ def main():
         # ["frontier", "jadearc"],
         # ["perlmutter", "bede"],
         # ["perlmutter", "bede", "waimea"],
-        # ["jadearc", "bede"],
         # ["jadearc", "bede", "waimea"],
-        ["awe", "jadearc", "bede", "blackmass", "blackmass_cu130", "mavericks"],#, "mavericks-fp32"],
-        ["bede" "blackmass_cu130", "mavericks"],#, 
-        ["bede", "blackmass", "mavericks"],#, 
-
-        ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32",  "mavericks", "mavericks-fp32"],
-
+        ["awe", "jadearc", "bede", "blackmass", "mavericks"],
+        ["awe", "jadearc"],
+        ["bede", "blackmass", "mavericks"],
+        ["bede", "blackmass_cu130", "mavericks"],
+        ["jadearc", "bede"],
+        ["awe", "blackmass"],
+        ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
     ]
 
     for combo in combinations:
