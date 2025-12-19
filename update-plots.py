@@ -714,7 +714,7 @@ def main():
     # analyses["frontier"] = plot_minimal("frontier")
     # analyses["perlmutter"] = plot_like = plot_all("perlmutter")
     analyses["jadearc"] = plot_minimal("jadearc")
-    analyses["bede"] = plot_like = plot_minimal("bede")
+    analyses["bede"] = plot_minimal("bede")
     analyses["awe"] = plot_minimal("awe")
     analyses["blackmass"] = plot_minimal("blackmass")
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
@@ -722,7 +722,8 @@ def main():
     analyses["blackmass-cu130-fp32"] = plot_minimal("blackmass-cu130-fp32")
     analyses["blackmass-cu126-fp32"] = plot_minimal("blackmass-cu126-fp32")
     analyses["mavericks-fp32"] = plot_minimal("mavericks-fp32")
-
+    
+    plot_like=analyses["bede"]
 
     # Compare multiple systems
     plots_dir = Path("plots")
@@ -733,15 +734,6 @@ def main():
 
     combinations = [
         # ["frontier", "perlmutter"],
-        # ["frontier", "perlmutter", "jadearc"],
-        # ["frontier", "perlmutter", "bede"],
-        # ["frontier", "perlmutter", "waimea"],
-        # ["frontier", "perlmutter", "jadearc", "bede"],
-        # ["frontier", "perlmutter", "jadearc", "bede", "waimea"],
-        # ["frontier", "jadearc"],
-        # ["perlmutter", "bede"],
-        # ["perlmutter", "bede", "waimea"],
-        # ["jadearc", "bede", "waimea"],
         ["awe", "jadearc", "bede", "blackmass", "mavericks"],
         ["awe", "jadearc"],
         ["bede", "blackmass", "mavericks"],
@@ -749,6 +741,7 @@ def main():
         ["jadearc", "bede"],
         ["awe", "blackmass"],
         ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
+        ["blackmass", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
     ]
 
     for combo in combinations:
