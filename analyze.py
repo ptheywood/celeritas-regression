@@ -54,6 +54,7 @@ CPU_POWER_PER_TASK= {
     "perlmutter": 280 / 4, # AMD EPYC 7453,
     "jadearc": 280 / 4, # 4 GPU per AMD EPYC 9534 64-Core
     "bede": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
+    "bede-fp32": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
     "awe": 350 / 2, # 7960X 24-Cores, shared between 2 7900XTX.
     "blackmass": 180, # 2950X 16-Core Processor, 1 3080
     "blackmass-cu126-fp32": 180, # 2950X 16-Core Processor, 1 3080

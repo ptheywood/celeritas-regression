@@ -29,6 +29,7 @@ system_color = {
     "perlmutter": "#7A954F",  # green, nvidia
     "jadearc": "#E7298ACC", # Colour brewer Dark 2 Pink, AMD
     "bede": "#1B9E77CC", # Colour Brewer Dark 2 green, nvidia
+    "bede-fp32": "#0000FF", # Colour Brewer Dark 2 green, nvidia
     "awe": "#d95f02CC", # Colour Brewer  dark 2 orange, AMD
     "blackmass": "#666666CC", # Colour Brewer Dark 2 grey, nv
     "blackmass_cu130": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
@@ -65,6 +66,7 @@ alt_system_labels = {
     "perlmutter": "Perlmutter",
     "jadearc": "JADE 2.5",
     "bede": "Bede GH200",
+    "bede-fp32": "Bede GH200 FP32",
     "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
@@ -80,6 +82,7 @@ system_gpu_label = {
     "perlmutter": "A100",
     "jadearc": "MI300X",
     "bede": "GH200",
+    "bede-fp32": "Bede GH200 FP32",
     "awe": "7900XTX",
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
@@ -719,6 +722,7 @@ def main():
     analyses["blackmass"] = plot_minimal("blackmass")
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
     analyses["mavericks"] = plot_minimal("mavericks")
+    analyses["bede-fp32"] = plot_minimal("bede-fp32")
     analyses["blackmass-cu130-fp32"] = plot_minimal("blackmass-cu130-fp32")
     analyses["blackmass-cu126-fp32"] = plot_minimal("blackmass-cu126-fp32")
     analyses["mavericks-fp32"] = plot_minimal("mavericks-fp32")
@@ -741,7 +745,7 @@ def main():
         ["jadearc", "bede"],
         ["awe", "blackmass"],
         ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
-        ["blackmass", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
+        ["blackmass", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32", "bede-fp32"],
     ]
 
     for combo in combinations:

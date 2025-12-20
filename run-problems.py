@@ -336,6 +336,47 @@ class Bede(System):
         return env
 
 
+class BedeFP32(System):
+    #  User must be a member of the bdshe19 project on N8CIR Bede & have activated the spack env
+    build_dirs = {
+        'orange': Path("/nobackup/projects/bdshe19/aarch64/celeritas-project/celeritas/build-ndebug-novg-fp32"),
+    }
+    name = "bede-fp32"
+    num_jobs = 1 # 1 GH200 480GB per gh partition node
+    gpu_per_job = 1
+    cpu_per_job = 72 # 72 CPU cores per GH200
+    cpu_per_job_g4 = int(cpu_per_job // 2) # celer-g4 encounters cuda out of memory errors with high cpu per gpu count
+    power_sample_interval = 1.0  # seconds
+
+    def create_gpu_power_monitor_subprocess(self, inp):
+        """
+        Create a subprocess that monitors GPU power usage using nvidia-smi
+
+        Must be using ampere+ GPUs, each sample measures the average power draw over 1s
+
+        Returns:
+            subprocess: the power monitor subprocess
+        """
+        cmd = "nvidia-smi"
+        args = ['dmon', '-i', str(inp['_instance']), '--select', 'pu', '--options', 'DT']
+        return asyncio.create_subprocess_exec(cmd, *args, stdout=subprocess.PIPE)
+
+    def get_runtime_environ(self, inp):
+        # Get the environment for the generic System
+        env = super().get_runtime_environ(inp)
+
+        # celer-g4 encounters cuda out of mem errors on GH200 with 72 CPU threads but a single 96GiB GPU.
+        # use a different cpu count in this case.
+        if inp['_exe'] == "celer-g4" and inp['use_device']:
+            env['G4FORCENUMBEROFTHREADS'] = str(self.cpu_per_job_g4)
+
+        # return the updated environment
+        return env
+    
+    # no vecgeom builds in fp32, or g4
+    def filter_problems(self, inputs):
+        return [i for i in inputs if i['_geometry'] == "orange" and i["_exe"] == "celer-sim"]
+
 class JadeARC(System):
     _CELER_ROOT = Path(environ['DATA']) / 'shareing-r1' / 'celeritas'
     build_dirs = {
@@ -886,7 +927,7 @@ async def main():
         Sys = Local
     else:
         # TODO: use metaclass to build this list automatically
-        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks, BlackmassCU130FP32, MavericksFP32, BlackmassCU126FP32]}
+        _systems = {S.name: S for S in [Frontier, Perlmutter, Wildstyle, Bede, BedeFP32, JadeARC, Awe, Blackmass, BlackmassCU130, Mavericks, BlackmassCU130FP32, MavericksFP32, BlackmassCU126FP32]}
         Sys = _systems[sysname]
 
     system = Sys()
