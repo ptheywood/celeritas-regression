@@ -566,7 +566,7 @@ input_dir = regression_dir / "input"
 base_input = {
     "_geometry": "orange",
     "_exe": "celer-sim",
-    "_timeout": 600.0,
+    "_timeout": 3600.0,
     "_use_celeritas": True,
     "use_device": False,
     "merge_events": False, # Separate streams

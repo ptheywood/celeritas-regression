@@ -88,6 +88,7 @@ CPU_PER_TASK = {
     "perlmutter": 16,
     "jadearc": 16, # 128 cores per node, with 8 GPUs
     "bede": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
+    "bede-fp32": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
     "awe": 24, # 24c per node, 2 gpus
     "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
     "blackmass_cu130": 8, # 16 c 32 t 1 GPU, but device OOM
@@ -102,6 +103,7 @@ TASK_PER_NODE = {
     "perlmutter": 4,
     "jadearc": 1, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
     "bede": 1, # single GH200 per node.
+    "bede-fp32": 1, # single GH200 per node.
     "awe": 1, # 2 gpus, but onyl using 1 for now
     "blackmass": 1, # 1 gpu
     "blackmass_cu130": 1, # 1 gpu

@@ -745,7 +745,7 @@ def main():
         ["jadearc", "bede"],
         ["awe", "blackmass"],
         ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
-        ["blackmass", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32", "bede-fp32"],
+        ["bede", "bede-fp32", "blackmass", "blackmass-cu126-fp32", "mavericks", "mavericks-fp32"],
     ]
 
     for combo in combinations:
