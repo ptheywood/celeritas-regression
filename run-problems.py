@@ -378,7 +378,7 @@ class BedeFP32(System):
         return [i for i in inputs if i['_geometry'] == "orange" and i["_exe"] == "celer-sim"]
 
 class JadeARC(System):
-    _CELER_ROOT = Path(environ['DATA']) / 'shareing-r1' / 'celeritas' if 'DATA' in environ else None
+    _CELER_ROOT = Path(environ['DATA']) / 'shareing-r1' / 'celeritas' if 'DATA' in environ else ""
     build_dirs = {
         "orange": _CELER_ROOT / 'build-ndebug-novg'
     }
