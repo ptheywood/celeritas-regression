@@ -722,7 +722,7 @@ def main():
     analyses["blackmass"] = plot_minimal("blackmass")
     analyses["blackmass_cu130"] = plot_minimal("blackmass_cu130")
     analyses["mavericks"] = plot_minimal("mavericks")
-    analyses["bede-fp32"] = plot_minimal("bede-fp32")
+    # analyses["bede-fp32"] = plot_minimal("bede-fp32")
     analyses["blackmass-cu130-fp32"] = plot_minimal("blackmass-cu130-fp32")
     analyses["blackmass-cu126-fp32"] = plot_minimal("blackmass-cu126-fp32")
     analyses["mavericks-fp32"] = plot_minimal("mavericks-fp32")
@@ -745,7 +745,7 @@ def main():
         ["jadearc", "bede"],
         ["awe", "blackmass"],
         ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
-        ["bede", "bede-fp32", "blackmass", "blackmass-cu126-fp32", "mavericks", "mavericks-fp32"],
+        ["blackmass", "blackmass-cu126-fp32", "mavericks", "mavericks-fp32"],
     ]
 
     for combo in combinations:
