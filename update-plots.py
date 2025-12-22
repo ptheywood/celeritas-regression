@@ -71,7 +71,7 @@ alt_system_labels = {
     "blackmass": "RTX 3080",
     "blackmass_cu130": "RTX 3080 CUDA 13.0",
     "blackmass-cu130-fp32": "RTX 3080 CUDA 13.0 FP32",
-    "blackmass-cu126-fp32": "RTX 3080 CUDA 12.6 FP32",
+    "blackmass-cu126-fp32": "RTX 3080 FP32",
     "mavericks": "Titan V",
     "mavericks-fp32": "Titan V FP32",
 
@@ -739,12 +739,13 @@ def main():
     combinations = [
         # ["frontier", "perlmutter"],
         ["awe", "jadearc", "bede", "blackmass", "mavericks"],
+        ["bede", "jadearc", "awe", "blackmass"],
         ["awe", "jadearc"],
         ["bede", "blackmass", "mavericks"],
         ["bede", "blackmass_cu130", "mavericks"],
         ["jadearc", "bede"],
         ["awe", "blackmass"],
-        ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
+        # ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
         ["blackmass", "blackmass-cu126-fp32", "mavericks", "mavericks-fp32"],
     ]
 
