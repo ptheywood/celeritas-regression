@@ -54,6 +54,7 @@ CPU_POWER_PER_TASK= {
     "perlmutter": 280 / 4, # AMD EPYC 7453,
     "jadearc": 280 / 4, # 4 GPU per AMD EPYC 9534 64-Core
     "bede": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
+    "bede-144g": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
     "bede-fp32": 100 / 1, # GH200 - 1000 W (for memory + CPU + GPU) with the GPU consuming up to 900 watts?
     "awe": 350 / 2, # 7960X 24-Cores, shared between 2 7900XTX.
     "blackmass": 180, # 2950X 16-Core Processor, 1 3080
@@ -73,6 +74,7 @@ GPU_POWER_PER_TASK = {
     "perlmutter": 100, # based on real-world usage
     "jadearc": 750, # MI300x 750W "Typical Board Power"
     "bede": 900, # GH200 480GB @ 900W
+    "bede-144g": 900, # GH200 480GB @ 900W
     "awe": 355, # 2x 7900 XTX 
     "blackmass": 320, # 3080
     "blackmass_cu130": 320, # 3080
@@ -87,7 +89,7 @@ CPU_PER_TASK = {
     "frontier": 7, # 64 total, 8 reserved
     "perlmutter": 16,
     "jadearc": 16, # 128 cores per node, with 8 GPUs
-    "bede": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
+    "bede-144g": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
     "bede-fp32": 72, # 72 reduced to 36 for g4+gpu to avoid CUDA OOM for 1 GPU.
     "awe": 24, # 24c per node, 2 gpus
     "blackmass": 8, # 16 c 32 t 1 GPU, but device OOM
@@ -103,6 +105,7 @@ TASK_PER_NODE = {
     "perlmutter": 4,
     "jadearc": 1, # 8, # 8 GPUs per node @todo - figure out how to make this plot correctly.
     "bede": 1, # single GH200 per node.
+    "bede-144g": 1, # single GH200 per node.
     "bede-fp32": 1, # single GH200 per node.
     "awe": 1, # 2 gpus, but onyl using 1 for now
     "blackmass": 1, # 1 gpu
