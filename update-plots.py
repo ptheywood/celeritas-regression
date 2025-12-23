@@ -29,14 +29,15 @@ system_color = {
     "perlmutter": "#7A954F",  # green, nvidia
     "jadearc": "#E7298ACC", # Colour brewer Dark 2 Pink, AMD
     "bede": "#1B9E77CC", # Colour Brewer Dark 2 green, nvidia
-    "bede-fp32": "#0000FF", # Colour Brewer Dark 2 green, nvidia
     "awe": "#d95f02CC", # Colour Brewer  dark 2 orange, AMD
-    "blackmass": "#666666CC", # Colour Brewer Dark 2 grey, nv
-    "blackmass_cu130": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
-    "blackmass-cu130-fp32": "#FF0000",
-    "blackmass-cu126-fp32": "#FF00FF",
+    "blackmass": "#e6ab02CC", # Colour Brewer Dark 2 yellow, nv
+    "blackmass_cu130": "#7570b3CC", # Colour Brewer Dark 2 grey, nv
     "mavericks": "#a6761dCC", # colour brewer dark 2 brown, nv
-    "mavericks-fp32": "#00ff00",
+    # fp32 uses slightly diff colours
+    "bede-fp32": "#7fc97fcc",
+    "blackmass-cu126-fp32": "#386cb0cc",
+    "blackmass-cu130-fp32": "#bf5b17cc",
+    "mavericks-fp32": "#beaed4cc",
 
 }
 
@@ -747,6 +748,7 @@ def main():
         ["awe", "blackmass"],
         # ["blackmass", "blackmass-cu126-fp32", "blackmass_cu130", "blackmass-cu130-fp32", "mavericks", "mavericks-fp32"],
         ["blackmass", "blackmass-cu126-fp32", "mavericks", "mavericks-fp32"],
+        # ["awe", "jadearc", "bede", "blackmass", "mavericks", "blackmass_cu130", "blackmass-cu126-fp32", "blackmass-cu130-fp32", "mavericks-fp32"],
     ]
 
     for combo in combinations:
